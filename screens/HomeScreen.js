@@ -61,19 +61,20 @@ const HomeScreen = () => {
     },
   ];
 
-  const renderItem = ({item}) => {
-    return (
-      <View>
-        <Image source={{uri: item.image}} style={{height: 150, width: 150}} />
-        <View style={{flexDirection: 'row'}}>
-          <Text style={{color: 'black'}}>{item.name}</Text>
-          <Ionicon name="star" size={10} color={'yellow'} />
-          <Text style={{color: 'black'}}>{item.avgRating}</Text>
-        </View>
-        <Text style={{color: 'black'}}>{item.price}</Text>
-      </View>
-    );
-  };
+  const renderItem = ({item}) => (
+    <View
+      style={{
+        marginTop: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 30,
+      }}>
+      <Image
+        source={item.image}
+        style={{height: 200, width: 300, borderRadius: 20}}
+      />
+    </View>
+  );
 
   const handlePageChange = event => {
     const xOffset = event.nativeEvent.contentOffset.x;

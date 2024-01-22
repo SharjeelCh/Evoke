@@ -14,6 +14,16 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-Evoke-EvokeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-Evoke-EvokeTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		C629FF1FF6CB4E6E9A6AAEE9 /* MPLUSRounded1c-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 23A1D9A7A86C4B7AB6FC8286 /* MPLUSRounded1c-Black.ttf */; };
+		34C79C43351443A9B6D14891 /* MPLUSRounded1c-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FF2156B4B2EA45A4960C7C2B /* MPLUSRounded1c-Bold.ttf */; };
+		269727D417474ED5AB2857EF /* MPLUSRounded1c-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7B1DD78A7EC64F2ABE07E926 /* MPLUSRounded1c-ExtraBold.ttf */; };
+		6127B2157A4547CC9E4F4590 /* MPLUSRounded1c-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 289F82AD4FFB4D84BA36FDE7 /* MPLUSRounded1c-Light.ttf */; };
+		973A7870FED8448B86743865 /* MPLUSRounded1c-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CD7D00D6EC9545E487A1F6B2 /* MPLUSRounded1c-Medium.ttf */; };
+		4E9012FE785248B7B6D23081 /* MPLUSRounded1c-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 15602BECDA544031A681635A /* MPLUSRounded1c-Regular.ttf */; };
+		1BA7FF64AE4642C2AC2B9BED /* MPLUSRounded1c-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 205398291B004716B7D1F0D6 /* MPLUSRounded1c-Thin.ttf */; };
+		487ACC4F9D54471CA6DD46CE /* SulphurPoint-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DD2C543B198E479DA94D0F5C /* SulphurPoint-Bold.ttf */; };
+		0FE2C5299CCC491786C6D911 /* SulphurPoint-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D0D751134701471791E9C987 /* SulphurPoint-Light.ttf */; };
+		D37E19C7206D42A5983181C0 /* SulphurPoint-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E2819119FE6545F4B1E4DB9B /* SulphurPoint-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +54,16 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Evoke/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-Evoke-EvokeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Evoke-EvokeTests.release.xcconfig"; path = "Target Support Files/Pods-Evoke-EvokeTests/Pods-Evoke-EvokeTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		23A1D9A7A86C4B7AB6FC8286 /* MPLUSRounded1c-Black.ttf */ = {isa = PBXFileReference; name = "MPLUSRounded1c-Black.ttf"; path = "../assets/fonts/MPLUSRounded1c-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FF2156B4B2EA45A4960C7C2B /* MPLUSRounded1c-Bold.ttf */ = {isa = PBXFileReference; name = "MPLUSRounded1c-Bold.ttf"; path = "../assets/fonts/MPLUSRounded1c-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		7B1DD78A7EC64F2ABE07E926 /* MPLUSRounded1c-ExtraBold.ttf */ = {isa = PBXFileReference; name = "MPLUSRounded1c-ExtraBold.ttf"; path = "../assets/fonts/MPLUSRounded1c-ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		289F82AD4FFB4D84BA36FDE7 /* MPLUSRounded1c-Light.ttf */ = {isa = PBXFileReference; name = "MPLUSRounded1c-Light.ttf"; path = "../assets/fonts/MPLUSRounded1c-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CD7D00D6EC9545E487A1F6B2 /* MPLUSRounded1c-Medium.ttf */ = {isa = PBXFileReference; name = "MPLUSRounded1c-Medium.ttf"; path = "../assets/fonts/MPLUSRounded1c-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		15602BECDA544031A681635A /* MPLUSRounded1c-Regular.ttf */ = {isa = PBXFileReference; name = "MPLUSRounded1c-Regular.ttf"; path = "../assets/fonts/MPLUSRounded1c-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		205398291B004716B7D1F0D6 /* MPLUSRounded1c-Thin.ttf */ = {isa = PBXFileReference; name = "MPLUSRounded1c-Thin.ttf"; path = "../assets/fonts/MPLUSRounded1c-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DD2C543B198E479DA94D0F5C /* SulphurPoint-Bold.ttf */ = {isa = PBXFileReference; name = "SulphurPoint-Bold.ttf"; path = "../assets/fonts/SulphurPoint-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D0D751134701471791E9C987 /* SulphurPoint-Light.ttf */ = {isa = PBXFileReference; name = "SulphurPoint-Light.ttf"; path = "../assets/fonts/SulphurPoint-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E2819119FE6545F4B1E4DB9B /* SulphurPoint-Regular.ttf */ = {isa = PBXFileReference; name = "SulphurPoint-Regular.ttf"; path = "../assets/fonts/SulphurPoint-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +142,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				052E55269DA24FD3A24D99CD /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -147,6 +168,24 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		052E55269DA24FD3A24D99CD /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				23A1D9A7A86C4B7AB6FC8286 /* MPLUSRounded1c-Black.ttf */,
+				FF2156B4B2EA45A4960C7C2B /* MPLUSRounded1c-Bold.ttf */,
+				7B1DD78A7EC64F2ABE07E926 /* MPLUSRounded1c-ExtraBold.ttf */,
+				289F82AD4FFB4D84BA36FDE7 /* MPLUSRounded1c-Light.ttf */,
+				CD7D00D6EC9545E487A1F6B2 /* MPLUSRounded1c-Medium.ttf */,
+				15602BECDA544031A681635A /* MPLUSRounded1c-Regular.ttf */,
+				205398291B004716B7D1F0D6 /* MPLUSRounded1c-Thin.ttf */,
+				DD2C543B198E479DA94D0F5C /* SulphurPoint-Bold.ttf */,
+				D0D751134701471791E9C987 /* SulphurPoint-Light.ttf */,
+				E2819119FE6545F4B1E4DB9B /* SulphurPoint-Regular.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -243,6 +282,16 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				C629FF1FF6CB4E6E9A6AAEE9 /* MPLUSRounded1c-Black.ttf in Resources */,
+				34C79C43351443A9B6D14891 /* MPLUSRounded1c-Bold.ttf in Resources */,
+				269727D417474ED5AB2857EF /* MPLUSRounded1c-ExtraBold.ttf in Resources */,
+				6127B2157A4547CC9E4F4590 /* MPLUSRounded1c-Light.ttf in Resources */,
+				973A7870FED8448B86743865 /* MPLUSRounded1c-Medium.ttf in Resources */,
+				4E9012FE785248B7B6D23081 /* MPLUSRounded1c-Regular.ttf in Resources */,
+				1BA7FF64AE4642C2AC2B9BED /* MPLUSRounded1c-Thin.ttf in Resources */,
+				487ACC4F9D54471CA6DD46CE /* SulphurPoint-Bold.ttf in Resources */,
+				0FE2C5299CCC491786C6D911 /* SulphurPoint-Light.ttf in Resources */,
+				D37E19C7206D42A5983181C0 /* SulphurPoint-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

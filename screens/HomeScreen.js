@@ -202,7 +202,7 @@ const HomeScreen = () => {
           Catergory
         </Text>
         <Text style={{color: '#008080', fontFamily: 'SulphurPoint-Bold'}}>
-          See All
+          See Aall
         </Text>
       </View>
       <View></View>

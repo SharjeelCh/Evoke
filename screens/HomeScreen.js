@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React, {useState, useRef} from 'react';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import DataFetch from '../SQL/DataFetch';
 
 const HomeScreen = () => {
   const width = Dimensions.get('window').width;
@@ -110,6 +111,7 @@ const HomeScreen = () => {
     setActiveIndex(nextIndex);
   };
 
+
   return (
     <View
       style={{
@@ -202,10 +204,10 @@ const HomeScreen = () => {
           Catergory
         </Text>
         <Text style={{color: '#008080', fontFamily: 'SulphurPoint-Bold'}}>
-          See Aall
+          See All
         </Text>
       </View>
-      <View></View>
+      <View style={{flex:1}}><DataFetch/></View>
     </View>
   );
 };

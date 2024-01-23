@@ -7,9 +7,10 @@ import SQLite from 'react-native-sqlite-storage';
 const DataFetch = () => {
   const [data1, setData1] = useState([]);
 
+
   const categories = [
     'shirt',
-    'pent',
+    'jacket',
     
   ];
   const db = SQLite.openDatabase({name: 'evokeDB.db', location: 'default'});
@@ -51,8 +52,20 @@ const DataFetch = () => {
         // Insert products into the products table (if not already present)
         db.transaction(tx => {
           result.payload.products.forEach((product, index) => {
-            const categoryId = categories.indexOf(product.category);
-            if (categoryId !== -1) {
+            let matchedCategory = null;
+
+            // Check if productTitle contains any category
+            for (let i = 0; i < categories.length; i++) {
+              if (product.productTitle.toLowerCase().includes(categories[i].toLowerCase())) {
+                matchedCategory = categories[i];
+                break;
+              }
+            }
+          
+            // If a matching category is found, insert the product into the database
+            if (matchedCategory !== null) {
+              const categoryId = categories.indexOf(matchedCategory);
+            if (categoryId != -1) {
             tx.executeSql(
               'INSERT OR IGNORE INTO products (proid,UniqueId, Proname, Proprice, rating, picture, catid) VALUES (?, ?, ?, ?, ?, ?,?);',
               [
@@ -73,14 +86,14 @@ const DataFetch = () => {
                 console.error('Error inserting product:', error);
               },
             );
-          }}
+          }}}
           );
         });
 
-        setData1(result.payload.products);
+       // setData1(result.payload.products);
 
         ///////
-        console.log(data1);
+       // console.log(data1);
       } else {
         console.error('No products found for category:', category);
       }
@@ -91,7 +104,7 @@ const DataFetch = () => {
 
   useEffect(() => {
     tables();
-    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+   /*const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
     const fetchDataWithDelay = async (category, delayTime) => {
       await fetchData(category);
@@ -99,8 +112,8 @@ const DataFetch = () => {
     };
 
     categories.forEach((category, index) => {
-      fetchDataWithDelay(category, index * 4000); // Waits for 1 second between each request
-    });
+      fetchDataWithDelay(category, index * 0); // Waits for 1 second between each request
+    });  */
   }, []);
 
   class ProductItem extends React.PureComponent {

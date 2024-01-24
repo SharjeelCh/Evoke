@@ -382,7 +382,7 @@ const HomeScreen = () => {
           data={WishlistData}
           renderItem={renderProd}
           numColumns={2}
-          style={{marginHorizontal: 15}}
+          style={{marginHorizontal: 10}}
         />
       </ScrollView>
     </View>

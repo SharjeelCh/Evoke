@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  ScrollView,
 } from 'react-native';
 import React, {useState, useRef} from 'react';
 import Ionicon from 'react-native-vector-icons/Ionicons';
@@ -25,41 +26,60 @@ const HomeScreen = () => {
 
   const categoryData = [
     {
-      id: '01',
-      name: 'shirts',
-      iconname: 'shirt',
+      id: '06',
+      name: 'Shirts',
+      image: require('../assets/categoryicons/clothes.png'),
     },
-    {
-      id: '02',
-      name: 'pants',
-      iconname: 'shirt',
-    },
+    {id: '02', name: 'Cap', image: require('../assets/categoryicons/cap.png')},
     {
       id: '03',
-      name: 'shirts',
-      iconname: 'shirt',
+      name: 'Trousers',
+      image: require('../assets/categoryicons/man.png'),
     },
     {
       id: '04',
-      name: 'shirts',
-      iconname: 'shirt',
+      name: 'T-Shirt',
+      image: require('../assets/categoryicons/tshirt.png'),
     },
     {
       id: '05',
-      name: 'shirts',
-      iconname: 'shirt',
+      name: 'Pants',
+      image: require('../assets/categoryicons/trousers.png'),
     },
     {
-      id: '06',
-      name: 'shirts',
-      iconname: 'shirt',
-    },
-    {
-      id: '07',
-      name: 'shirts',
-      iconname: 'shirt',
+      id: '01',
+      name: 'Suits',
+      image: require('../assets/categoryicons/suit.png'),
     },
   ];
+
+  const renderCat = ({item}) => (
+    <View>
+      <View
+        style={{
+          backgroundColor: 'rgba(0, 128, 128,0.2),',
+          borderRadius: 100,
+          padding: 15,
+          margin: 10,
+        }}>
+        <Image
+          source={item.image}
+          style={{height: 30, width: 30}}
+          tintColor={'#008080'}
+        />
+      </View>
+      <Text
+        style={{
+          color: 'black',
+          fontFamily: 'SulphurPoint-Bold',
+          alignSelf: 'center',
+          marginTop: -5,
+          fontSize: 16,
+        }}>
+        {item.name}
+      </Text>
+    </View>
+  );
 
   const renderItem = ({item}) => (
     <View
@@ -165,47 +185,67 @@ const HomeScreen = () => {
           />
         </TouchableOpacity>
       </View>
-      <View style={{marginHorizontal: 0}}>
-        <FlatList
-          ref={ref => (flatListRef.current = ref)}
-          data={carouselData}
-          renderItem={renderItem}
-          horizontal
-          pagingEnabled={true}
-          onMomentumScrollEnd={scrollToNext}
-          onScroll={handlePageChange}
-        />
+      <ScrollView>
+        <View style={{marginHorizontal: 0}}>
+          <FlatList
+            ref={ref => (flatListRef.current = ref)}
+            data={carouselData}
+            renderItem={renderItem}
+            horizontal
+            pagingEnabled={true}
+            onMomentumScrollEnd={scrollToNext}
+            onScroll={handlePageChange}
+            showsHorizontalScrollIndicator={false}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 10,
+            }}>
+            <RenderDotIndicator />
+          </View>
+        </View>
         <View
           style={{
             flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: 25,
+            marginTop: 15,
             alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 10,
           }}>
-          <RenderDotIndicator />
+          <Text
+            style={{
+              color: 'black',
+              fontFamily: 'SulphurPoint-Bold',
+              fontSize: 20,
+            }}>
+            Catergory
+          </Text>
+          <Text style={{color: '#008080', fontFamily: 'SulphurPoint-Bold'}}>
+            See All
+          </Text>
         </View>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginHorizontal: 25,
-          marginTop: 15,
-          alignItems: 'center',
-        }}>
-        <Text
-          style={{
-            color: 'black',
-            fontFamily: 'SulphurPoint-Bold',
-            fontSize: 20,
-          }}>
-          Catergory
-        </Text>
-        <Text style={{color: '#008080', fontFamily: 'SulphurPoint-Bold'}}>
-          See All
-        </Text>
-      </View>
-      <View></View>
+        <View style={{marginHorizontal: 20}}>
+          <FlatList
+            data={categoryData}
+            renderItem={renderCat}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
+        <View style={{marginHorizontal: 25, marginTop: 15}}>
+          <Text
+            style={{
+              color: 'black',
+              fontFamily: 'SulphurPoint-Bold',
+              fontSize: 20,
+            }}>
+            New Arrival
+          </Text>
+        </View>
+      </ScrollView>
     </View>
   );
 };

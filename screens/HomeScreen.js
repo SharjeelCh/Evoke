@@ -207,7 +207,6 @@ const HomeScreen = () => {
           See All
         </Text>
       </View>
-      <View style={{flex:1}}><DataFetch/></View>
     </View>
   );
 };

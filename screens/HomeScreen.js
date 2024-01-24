@@ -8,13 +8,17 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-import React, {useState, useRef} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import {LogBox} from 'react-native';
 
 const HomeScreen = () => {
   const width = Dimensions.get('window').width;
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef(null);
+  useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  }, []);
 
   const carouselData = [
     {id: '01', image: require('../assets/discountcarousels/image1.jpg')},
@@ -52,6 +56,135 @@ const HomeScreen = () => {
       image: require('../assets/categoryicons/suit.png'),
     },
   ];
+
+  const WishlistData = [
+    {
+      id: '01',
+      name: 'Brown Shirt',
+      url: 'https://picsum.photos/150?random',
+      price: 29.99,
+      avgRating: 4.5,
+    },
+    {
+      id: '02',
+      name: 'Yellow Shirt',
+      url: 'https://picsum.photos/150?random=1',
+      price: 19.99,
+      avgRating: 3.8,
+    },
+    {
+      id: '03',
+      name: 'Red Jacket',
+      url: 'https://picsum.photos/150?random=2',
+      price: 49.99,
+      avgRating: 4.2,
+    },
+    {
+      id: '04',
+      name: 'Grey Shoes',
+      url: 'https://picsum.photos/150?random=3',
+      price: 39.99,
+      avgRating: 4.0,
+    },
+    {
+      id: '05',
+      name: 'Black Nigga',
+      url: 'https://picsum.photos/150?random=4',
+      price: 59.99,
+      avgRating: 4.8,
+    },
+    {
+      id: '06',
+      name: 'Blue Jeans',
+      url: 'https://picsum.photos/150?random-5',
+      price: 34.99,
+      avgRating: 4.1,
+    },
+    {
+      id: '07',
+      name: 'White Sneakers',
+      url: 'https://picsum.photos/150?random=6',
+      price: 54.99,
+      avgRating: 4.6,
+    },
+    {
+      id: '08',
+      name: 'Green Hoodie',
+      url: 'https://picsum.photos/150?random1',
+      price: 44.99,
+      avgRating: 4.4,
+    },
+    {
+      id: '09',
+      name: 'Striped T-shirt',
+      url: 'https://picsum.photos/150?random2',
+      price: 22.99,
+      avgRating: 3.9,
+    },
+    {
+      id: '10',
+      name: 'Leather Boots',
+      url: 'https://picsum.photos/150?random3',
+      price: 79.99,
+      avgRating: 4.9,
+    },
+  ];
+
+  const renderProd = ({item}) => (
+    <TouchableOpacity
+      style={{alignItems: 'center', justifyContent: 'center', margin: 10}}>
+      <View style={{marginVertical: 10}}>
+        <Image
+          source={{uri: item.url}}
+          style={{height: 150, width: 150, borderRadius: 10}}
+        />
+        <Ionicon
+          name="heart"
+          color={'#008080'}
+          size={20}
+          style={{
+            position: 'absolute',
+            top: 10,
+            right: 10,
+            backgroundColor: 'rgba(255,255,255,0.6)',
+            borderRadius: 25,
+            padding: 5,
+            alignSelf: 'center',
+          }}
+        />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <Text style={{color: 'black', fontFamily: 'SulphurPoint-Bold'}}>
+            {item.name}
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginVertical: 5,
+            }}>
+            <Ionicon name="star" color={'orange'} size={15} />
+            <Text style={{color: 'black', fontFamily: 'SulphurPoint-Regular'}}>
+              {item.avgRating}
+            </Text>
+          </View>
+        </View>
+        <Text
+          style={{
+            color: 'black',
+            fontFamily: 'SulphurPoint-Bold',
+            fontSize: 16,
+            marginTop: -5,
+          }}>
+          ${item.price}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   const renderCat = ({item}) => (
     <View>
@@ -245,6 +378,12 @@ const HomeScreen = () => {
             New Arrival
           </Text>
         </View>
+        <FlatList
+          data={WishlistData}
+          renderItem={renderProd}
+          numColumns={2}
+          style={{marginHorizontal: 15}}
+        />
       </ScrollView>
     </View>
   );

@@ -3,6 +3,33 @@ import React from 'react';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 
 const ProfileScreen = ({navigation}) => {
+  const renderMenuItem = (iconName, label, onPress) => (
+    <TouchableOpacity
+      onPress={onPress}
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginHorizontal: 25,
+        borderBottomWidth: 0.2,
+        borderColor: 'grey',
+        padding: 15,
+        alignItems: 'center',
+      }}>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <Ionicon name={iconName} size={25} color={'#008080'} />
+        <Text
+          style={{
+            color: 'black',
+            fontFamily: 'SulphurPoint-Bold',
+            marginHorizontal: 15,
+            fontSize: 20,
+          }}>
+          {label}
+        </Text>
+      </View>
+      <Ionicon name="chevron-forward-outline" size={25} color={'#008080'} />
+    </TouchableOpacity>
+  );
   return (
     <View style={{flex: 1, backgroundColor: 'white', paddingTop: 60}}>
       <View
@@ -71,186 +98,13 @@ const ProfileScreen = ({navigation}) => {
         }}>
         Muzammil Sheraz
       </Text>
-      <TouchableOpacity>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 25,
-            borderBottomWidth: 0.2,
-            borderColor: 'grey',
-            padding: 15,
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicon name="person-outline" size={25} color={'#008080'} />
-            <Text
-              style={{
-                color: 'black',
-                fontFamily: 'SulphurPoint-Bold',
-                marginHorizontal: 15,
-                fontSize: 20,
-              }}>
-              My Profile
-            </Text>
-          </View>
-          <Ionicon name="chevron-forward-outline" size={25} color={'#008080'} />
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 25,
-            borderBottomWidth: 0.2,
-            borderColor: 'grey',
-            padding: 15,
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicon name="card-outline" size={25} color={'#008080'} />
-            <Text
-              style={{
-                color: 'black',
-                fontFamily: 'SulphurPoint-Bold',
-                marginHorizontal: 15,
-                fontSize: 20,
-              }}>
-              Payment Options
-            </Text>
-          </View>
-          <Ionicon name="chevron-forward-outline" size={25} color={'#008080'} />
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 25,
-            borderBottomWidth: 0.2,
-            borderColor: 'grey',
-            padding: 15,
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicon name="reader-outline" size={25} color={'#008080'} />
-            <Text
-              style={{
-                color: 'black',
-                fontFamily: 'SulphurPoint-Bold',
-                marginHorizontal: 15,
-                fontSize: 20,
-              }}>
-              My Orders
-            </Text>
-          </View>
-          <Ionicon name="chevron-forward-outline" size={25} color={'#008080'} />
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 25,
-            borderBottomWidth: 0.2,
-            borderColor: 'grey',
-            padding: 15,
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicon name="settings-outline" size={25} color={'#008080'} />
-            <Text
-              style={{
-                color: 'black',
-                fontFamily: 'SulphurPoint-Bold',
-                marginHorizontal: 15,
-                fontSize: 20,
-              }}>
-              Settings
-            </Text>
-          </View>
-          <Ionicon name="chevron-forward-outline" size={25} color={'#008080'} />
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 25,
-            borderBottomWidth: 0.2,
-            borderColor: 'grey',
-            padding: 15,
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicon name="alert-circle-outline" size={25} color={'#008080'} />
-            <Text
-              style={{
-                color: 'black',
-                fontFamily: 'SulphurPoint-Bold',
-                marginHorizontal: 15,
-                fontSize: 20,
-              }}>
-              Help Center
-            </Text>
-          </View>
-          <Ionicon name="chevron-forward-outline" size={25} color={'#008080'} />
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 25,
-            borderBottomWidth: 0.2,
-            borderColor: 'grey',
-            padding: 15,
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicon name="lock-closed-outline" size={25} color={'#008080'} />
-            <Text
-              style={{
-                color: 'black',
-                fontFamily: 'SulphurPoint-Bold',
-                marginHorizontal: 15,
-                fontSize: 20,
-              }}>
-              Privacy Policy
-            </Text>
-          </View>
-          <Ionicon name="chevron-forward-outline" size={25} color={'#008080'} />
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 25,
-            padding: 15,
-            alignItems: 'center',
-          }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Ionicon name="log-out-outline" size={25} color={'#008080'} />
-            <Text
-              style={{
-                color: 'black',
-                fontFamily: 'SulphurPoint-Bold',
-                marginHorizontal: 15,
-                fontSize: 20,
-              }}>
-              SignOut
-            </Text>
-          </View>
-          <Ionicon name="chevron-forward-outline" size={25} color={'#008080'} />
-        </View>
-      </TouchableOpacity>
+      {renderMenuItem('person-outline', 'My Profile')}
+      {renderMenuItem('card-outline', 'Payment Options')}
+      {renderMenuItem('reader-outline', 'My Orders')}
+      {renderMenuItem('settings-outline', 'Settings')}
+      {renderMenuItem('alert-circle-outline', 'Help Center')}
+      {renderMenuItem('lock-closed-outline', 'Privacy Policy')}
+      {renderMenuItem('log-out-outline', 'Sign Out')}
     </View>
   );
 };

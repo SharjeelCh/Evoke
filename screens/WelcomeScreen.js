@@ -151,7 +151,7 @@ const WelcomeScreen = ({navigation}) => {
             marginBottom: 20,
             marginTop: 30,
           }}
-          onPress={() => navigation.navigate('bottomtab')}>
+          onPress={() => navigation.navigate('login')}>
           <Text
             style={{
               color: 'white',

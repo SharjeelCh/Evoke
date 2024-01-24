@@ -1,106 +1,178 @@
-import {View, Text, Pressable, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 
-const wishlistData = [
+const WishlistData = [
   {
     id: '01',
-    name: 'Brown Jacket',
-    price: 120,
-    avgRating: 4.9,
-    image: 'https://dummyimage.com/300x400/7a7a7a/ffffff&text=Brown+Jacket',
+    name: 'Brown Shirt',
+    url: 'https://picsum.photos/150?random',
+    price: 29.99,
+    avgRating: 4.5,
   },
   {
     id: '02',
-    name: 'Blue Dress',
-    price: 89.99,
-    avgRating: 4.5,
-    image: 'https://dummyimage.com/300x400/336699/ffffff&text=Blue+Dress',
+    name: 'Yellow Shirt',
+    url: 'https://picsum.photos/150?random=1',
+    price: 19.99,
+    avgRating: 3.8,
   },
   {
     id: '03',
-    name: 'Red High Heels',
-    price: 59.99,
+    name: 'Red Jacket',
+    url: 'https://picsum.photos/150?random=2',
+    price: 49.99,
     avgRating: 4.2,
-    image: 'https://dummyimage.com/300x400/ff0000/ffffff&text=Red+Heels',
   },
   {
     id: '04',
-    name: 'Black Jeans',
-    price: 65.5,
-    avgRating: 4.7,
-    image: 'https://dummyimage.com/300x400/000000/ffffff&text=Black+Jeans',
+    name: 'Grey Shoes',
+    url: 'https://picsum.photos/150?random=3',
+    price: 39.99,
+    avgRating: 4.0,
   },
   {
     id: '05',
-    name: 'White Sneakers',
-    price: 49.99,
+    name: 'Black Nigga',
+    url: 'https://picsum.photos/150?random=4',
+    price: 59.99,
     avgRating: 4.8,
-    image: 'https://dummyimage.com/300x400/ffffff/000000&text=White+Sneakers',
   },
   {
     id: '06',
-    name: 'Green Sweater',
-    price: 79.99,
-    avgRating: 4.4,
-    image: 'https://dummyimage.com/300x400/00cc00/ffffff&text=Green+Sweater',
+    name: 'Blue Jeans',
+    url: 'https://picsum.photos/150?random-5',
+    price: 34.99,
+    avgRating: 4.1,
   },
   {
     id: '07',
-    name: 'Yellow Handbag',
-    price: 39.99,
+    name: 'White Sneakers',
+    url: 'https://picsum.photos/150?random=6',
+    price: 54.99,
     avgRating: 4.6,
-    image: 'https://dummyimage.com/300x400/00cc00/ffffff&text=Yellow+Handbag',
+  },
+  {
+    id: '08',
+    name: 'Green Hoodie',
+    url: 'https://picsum.photos/150?random1',
+    price: 44.99,
+    avgRating: 4.4,
+  },
+  {
+    id: '09',
+    name: 'Striped T-shirt',
+    url: 'https://picsum.photos/150?random2',
+    price: 22.99,
+    avgRating: 3.9,
+  },
+  {
+    id: '10',
+    name: 'Leather Boots',
+    url: 'https://picsum.photos/150?random3',
+    price: 79.99,
+    avgRating: 4.9,
   },
 ];
 
 const renderItem = ({item}) => (
-  <View>
-    <Image source={{uri: item.prodImage}} style={{height: 150, width: 150}} />
-    <View style={{flexDirection: 'row'}}>
-      <Text style={{color: 'black'}}>{item.name}</Text>
-      <Ionicon name="star" size={10} color={'yellow'} />
-      <Text style={{color: 'black'}}>{item.avgRating}</Text>
-    </View>
-    <Text style={{color: 'black'}}>{item.price}</Text>
-  </View>
-);
-
-const Wishlist = ({navigation}) => {
-  <View style={{flex: 1, paddingTop: 60}}>
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginHorizontal: 20,
-        alignItems: 'center',
-      }}>
-      <Pressable
-        onPress={() => {
-          navigation.goBack();
-        }}
+  <TouchableOpacity style={{marginHorizontal: 10}}>
+    <View style={{marginVertical: 10}}>
+      <Image
+        source={{uri: item.url}}
+        style={{height: 150, width: 150, borderRadius: 10}}
+      />
+      <Ionicon
+        name="heart"
+        color={'#008080'}
+        size={20}
         style={{
-          borderRadius: 45,
-          borderWidth: 0.5,
-          padding: 8,
-          borderColor: 'grey',
+          position: 'absolute',
+          top: 10,
+          right: 10,
+          backgroundColor: 'rgba(255,255,255,0.6)',
+          borderRadius: 25,
+          padding: 5,
+          alignSelf: 'center',
+        }}
+      />
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}>
-        <Ionicon name="arrow-back" size={25} color={'black'} />
-      </Pressable>
+        <Text style={{color: 'black', fontFamily: 'SulphurPoint-Bold'}}>
+          {item.name}
+        </Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginVertical: 5,
+          }}>
+          <Ionicon name="star" color={'orange'} size={15} />
+          <Text style={{color: 'black', fontFamily: 'SulphurPoint-Regular'}}>
+            {item.avgRating}
+          </Text>
+        </View>
+      </View>
       <Text
         style={{
           color: 'black',
-          fontSize: 20,
-          marginLeft: -45,
+          fontFamily: 'SulphurPoint-Bold',
+          fontSize: 16,
+          marginTop: -5,
         }}>
-        My Wishlist
+        ${item.price}
       </Text>
-      <View></View>
     </View>
-    <View>
-      <FlatList data={wishlistData} renderItem={renderItem} />
+  </TouchableOpacity>
+);
+
+const Wishlist = ({navigation}) => {
+  return (
+    <View style={{flex: 1, backgroundColor: 'white', paddingTop: 60}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          marginHorizontal: 20,
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <Pressable
+          style={{
+            padding: 10,
+            borderColor: 'grey',
+            borderWidth: 0.5,
+            borderRadius: 30,
+          }}
+          onPress={() => navigation.goBack()}>
+          <Ionicon name="arrow-back" size={25} color={'black'} />
+        </Pressable>
+        <Text
+          style={{
+            color: 'black',
+            fontSize: 22,
+            fontFamily: 'SulphurPoint-Bold',
+            marginLeft: -50,
+          }}>
+          My Wishlist
+        </Text>
+        <View></View>
+      </View>
+      <View style={{marginHorizontal: 10, marginTop: 20}}>
+        <FlatList data={WishlistData} renderItem={renderItem} numColumns={2} />
+      </View>
     </View>
-  </View>;
+  );
 };
 
 export default Wishlist;

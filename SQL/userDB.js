@@ -1,28 +1,37 @@
-
 import SQLite from 'react-native-sqlite-storage';
 
-const db = SQLite.openDatabase({ name: 'userDB.db', location: 'default' });
+const db = SQLite.openDatabase(
+  { name: 'userDB.db', location: 'default' },
+  () => {
+    console.log('userDB opened successfully');
+  },
+  error => {
+    console.log('Error while opening the database:', error);
+  },
+);
 
 export const createTable = () => {
-    db.transaction(tx => {
-      tx.executeSql(
-        'CREATE TABLE IF NOT EXISTS Users (UserId INTEGER PRIMARY KEY AUTOINCREMENT,Username varchar(100) , Email varchar(50)) , Password varchar(20);',
-        [],
-        (tx, results) => {},
-        (tx, error) => {
-          console.log('Error while creating table:', error);
-        },
-      );
-    });
-  };
+  db.transaction(tx => {
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS Users (UserId INTEGER PRIMARY KEY AUTOINCREMENT, Username varchar(100), Email varchar(50), Password varchar(20))',
+      [],
+      (tx, results) => {
+        console.log('User table created successfully');
+      },
+      (tx, error) => {
+        console.log('Error while creating table:', error);
+      },
+    );
+  });
+};
 
-export const createUser = (username,email ,password) => {
+export const createUser = (username, email, password) => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(
         'INSERT INTO Users (Username,Email, Password) VALUES (?, ?, ?);',
-        [username, email ,password],
-        (_, results) => resolve({ id: results.insertId, username }),
+        [username, email, password],
+        (_, results) => resolve({id: results.insertId, username}),
         (_, error) => reject(error),
       );
     });

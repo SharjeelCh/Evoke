@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import {LogBox} from 'react-native';
 
 const HomeScreen = () => {
   const width = Dimensions.get('window').width;
@@ -262,7 +263,6 @@ const HomeScreen = () => {
     setActiveIndex(nextIndex);
   };
 
-
   return (
     <View
       style={{
@@ -318,47 +318,73 @@ const HomeScreen = () => {
           />
         </TouchableOpacity>
       </View>
-      <View style={{marginHorizontal: 0}}>
-        <FlatList
-          ref={ref => (flatListRef.current = ref)}
-          data={carouselData}
-          renderItem={renderItem}
-          horizontal
-          pagingEnabled={true}
-          onMomentumScrollEnd={scrollToNext}
-          onScroll={handlePageChange}
-        />
+      <ScrollView>
+        <View style={{marginHorizontal: 0}}>
+          <FlatList
+            ref={ref => (flatListRef.current = ref)}
+            data={carouselData}
+            renderItem={renderItem}
+            horizontal
+            pagingEnabled={true}
+            onMomentumScrollEnd={scrollToNext}
+            onScroll={handlePageChange}
+            showsHorizontalScrollIndicator={false}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 10,
+            }}>
+            <RenderDotIndicator />
+          </View>
+        </View>
         <View
           style={{
             flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginHorizontal: 25,
+            marginTop: 15,
             alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 10,
           }}>
-          <RenderDotIndicator />
+          <Text
+            style={{
+              color: 'black',
+              fontFamily: 'SulphurPoint-Bold',
+              fontSize: 20,
+            }}>
+            Catergory
+          </Text>
+          <Text style={{color: '#008080', fontFamily: 'SulphurPoint-Bold'}}>
+            See All
+          </Text>
         </View>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          marginHorizontal: 25,
-          marginTop: 15,
-          alignItems: 'center',
-        }}>
-        <Text
-          style={{
-            color: 'black',
-            fontFamily: 'SulphurPoint-Bold',
-            fontSize: 20,
-          }}>
-          Catergory
-        </Text>
-        <Text style={{color: '#008080', fontFamily: 'SulphurPoint-Bold'}}>
-          See All
-        </Text>
-      </View>
-      <View></View>
+        <View style={{marginHorizontal: 20}}>
+          <FlatList
+            data={categoryData}
+            renderItem={renderCat}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
+        <View style={{marginHorizontal: 25, marginTop: 15}}>
+          <Text
+            style={{
+              color: 'black',
+              fontFamily: 'SulphurPoint-Bold',
+              fontSize: 20,
+            }}>
+            New Arrival
+          </Text>
+        </View>
+        <FlatList
+          data={WishlistData}
+          renderItem={renderProd}
+          numColumns={2}
+          style={{marginHorizontal: 15}}
+        />
+      </ScrollView>
     </View>
   );
 };

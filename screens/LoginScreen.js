@@ -1,9 +1,24 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
+import { useState } from 'react';
 import {Jiro} from 'react-native-textinput-effects';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import { loginUser } from '../SQL/userDB';
 
 const LoginScreen = ({navigation}) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const user = await loginUser(email,password)
+      console.log('Logged in user:', user);
+      navigation.navigate('bottomtab')
+    } catch (error) {
+      console.log('Error logging in:', error);
+    }
+  };
+
   return (
     <View style={{height: '100%', paddingTop: 40, backgroundColor: 'white'}}>
       <View
@@ -43,6 +58,7 @@ const LoginScreen = ({navigation}) => {
               fontFamily: 'SulphurPoint-Bold',
               fontWeight: 'normal',
             }}
+            onChangeText={(email)=>{setEmail(email)}}
           />
         </View>
 
@@ -63,6 +79,7 @@ const LoginScreen = ({navigation}) => {
               fontWeight: 'normal',
             }}
             style={{marginTop: 5}}
+            onChangeText={(mAil)=>{setPassword(mAil)}}
           />
           <View style={{position: 'relative', left: 257, bottom: 40}}>
             <TouchableOpacity onPress={() => {}}>
@@ -94,7 +111,7 @@ const LoginScreen = ({navigation}) => {
               borderRadius: 30,
               marginVertical: 30,
             }}
-            onPress={() => navigation.navigate('bottomtab')}>
+            onPress={()=>{handleLogin();}}>
             <Text
               style={{
                 fontSize: 22,

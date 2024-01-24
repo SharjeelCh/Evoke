@@ -1,10 +1,31 @@
 import {View, Text, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Jiro} from 'react-native-textinput-effects';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { createTable, createUser } from '../SQL/userDB';
 
 const SignUpScreen = ({navigation}) => {
+
+  const [userName, setuserName]=useState('');
+  const [email, setEmail]=useState('');
+  const [password, setPassword]=useState('');
+
+  const handleSignup = async () => {
+    try {
+      const user=await createUser(userName, email, password)
+      console.log('User created successfully', user);
+      navigation.navigate('login');
+    } catch (error) {
+      console.log('Error signing up:', error);
+    }
+  };
+
+  useEffect(()=>{
+    createTable();
+  },[])
+
+
   return (
     <View style={{height: '100%', paddingTop: 0, backgroundColor: 'white'}}>
       <View
@@ -57,6 +78,7 @@ const SignUpScreen = ({navigation}) => {
               fontFamily: 'SulphurPoint-Bold',
               fontWeight: 'normal',
             }}
+            onChangeText={userName => setuserName(userName)}
           />
         </View>
         <View style={{}}>
@@ -74,6 +96,7 @@ const SignUpScreen = ({navigation}) => {
               fontFamily: 'SulphurPoint-Bold',
               fontWeight: 'normal',
             }}
+            onChangeText={email => setEmail(email)}
           />
         </View>
 
@@ -94,6 +117,7 @@ const SignUpScreen = ({navigation}) => {
               fontWeight: 'normal',
             }}
             style={{marginTop: 0}}
+            onChangeText={password => setPassword(password)}
           />
           <View style={{position: 'relative', left: 257, bottom: 40}}>
             <TouchableOpacity onPress={() => {}}>
@@ -146,7 +170,7 @@ const SignUpScreen = ({navigation}) => {
               marginVertical: 30,
             }}
             onPress={() => {
-              navigation.navigate('otp');
+              handleSignup();
             }}>
             <Text
               style={{
@@ -243,7 +267,7 @@ const SignUpScreen = ({navigation}) => {
             }}>
             Already have an Account?
           </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('login')}>
+          <TouchableOpacity onPress={handleSignup}>
             <Text
               style={{
                 fontFamily: 'SulphurPoint-Bold',

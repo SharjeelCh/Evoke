@@ -1,23 +1,31 @@
 import {View, Text, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import {Jiro} from 'react-native-textinput-effects';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import { loginUser } from '../SQL/userDB';
+import { useContext } from 'react';
+import { UserContext } from './UserProvider';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const LoginScreen = ({navigation}) => {
+  const { user, setUser } = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     try {
       const user = await loginUser(email,password)
-      console.log('Logged in user:', user);
+      setUser(user);
+      await AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
       navigation.navigate('bottomtab')
     } catch (error) {
       console.log('Error logging in:', error);
     }
   };
+  useEffect(()=>{
+    console.log('Logged in userContext:', user);
+  },[])
 
   return (
     <View style={{height: '100%', paddingTop: 40, backgroundColor: 'white'}}>

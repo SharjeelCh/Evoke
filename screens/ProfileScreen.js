@@ -1,8 +1,33 @@
 import {View, Text, Pressable, Image, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import SQLite from 'react-native-sqlite-storage';
+import {UserContext} from './UserProvider';
 
 const ProfileScreen = ({navigation}) => {
+  const [name, setname] = useState('');
+  const {user} = useContext(UserContext);
+
+  const db = SQLite.openDatabase({name: 'userDB.db', location: 'default'});
+  const getusername = () => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT Username FROM Users where Email = ?;',
+        [user.Email],
+        (_, results) => {
+          if (results.rows.length > 0) {
+            setname(results.rows.item(0).Username);
+          }
+        },
+        (_, error) => reject(error),
+      );
+    });
+  };
+  useEffect(() => {
+    getusername();
+    console.log(user.Email);
+  }, [user]);
+
   const renderMenuItem = (iconName, label, onPress) => (
     <TouchableOpacity
       onPress={onPress}
@@ -96,7 +121,7 @@ const ProfileScreen = ({navigation}) => {
           alignSelf: 'center',
           margin: 30,
         }}>
-        Muzammil Sheraz
+        {name}
       </Text>
       {renderMenuItem('person-outline', 'My Profile')}
       {renderMenuItem('card-outline', 'Payment Options')}

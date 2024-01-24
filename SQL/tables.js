@@ -98,8 +98,11 @@ db.transaction(tx => {
 
 export const tables = () => {
   createTables();
+ showtables();
+  //deletetable();
+};
+export const showtables1 = () => {
   showtables();
- // deletetable();
 };
 
 export default db;

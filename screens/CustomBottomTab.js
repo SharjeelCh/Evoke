@@ -23,7 +23,6 @@ const CustomBottomTab = ({state, descriptors, navigation}) => {
     Cart: {outlined: 'bag-handle-outline', filled: 'bag-handle'},
     Wishlist: {outlined: 'heart-outline', filled: 'heart'},
     Profile: {outlined: 'person-circle-outline', filled: 'person-circle'},
-    // Add more routes and their corresponding icons as needed
   };
 
   return (
@@ -93,7 +92,7 @@ const styles = StyleSheet.create({
   tabBarContainer: {
     flex: 1,
     flexDirection: 'row',
-    height: 70,
+    height: 60,
     position: 'absolute',
     alignSelf: 'center',
     backgroundColor: '#000',
@@ -109,8 +108,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   slidingTab: {
-    width: 56,
-    height: 56,
+    width: 50,
+    height: 50,
     borderRadius: 100,
     backgroundColor: 'white',
   },

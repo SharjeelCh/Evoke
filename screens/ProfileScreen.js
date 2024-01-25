@@ -3,6 +3,7 @@ import React, {useEffect, useState, useContext} from 'react';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import SQLite from 'react-native-sqlite-storage';
 import {UserContext} from './UserProvider';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const ProfileScreen = ({navigation}) => {
   const [name, setname] = useState(null);
@@ -23,6 +24,22 @@ const ProfileScreen = ({navigation}) => {
       );
     });
   };
+
+  const { setUser } = useContext(UserContext);
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('isLoggedIn');
+      await AsyncStorage.removeItem('userData');
+      
+      setUser({ isLoggedIn: false });
+      
+      navigation.navigate('welcome'); 
+    } catch (error) {
+      console.error('Error during logout', error);
+    }
+  }
+
   useEffect(() => {
     getusername();
     console.log("user email: ",user.Email);
@@ -129,7 +146,7 @@ const ProfileScreen = ({navigation}) => {
       {renderMenuItem('settings-outline', 'Settings')}
       {renderMenuItem('alert-circle-outline', 'Help Center')}
       {renderMenuItem('lock-closed-outline', 'Privacy Policy')}
-      {renderMenuItem('log-out-outline', 'Sign Out')}
+      {renderMenuItem('log-out-outline', 'Sign Out' , handleLogout)}
     </View>
   );
 };

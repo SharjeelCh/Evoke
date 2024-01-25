@@ -11,13 +11,32 @@ import {
 import React, {useEffect, useState, useRef} from 'react';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import {LogBox} from 'react-native';
+import { tables } from '../SQL/tables';
+import { selectProducts } from '../SQL/selectProducts';
 
 const HomeScreen = () => {
   const width = Dimensions.get('window').width;
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef(null);
+  const [incoming, setincoming] = useState([]);
+  const [shirt, setshirt] = useState([]);
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+    selectProducts()
+    .then(({categories, catShirt}) => {
+      // Now you have categories and products data
+      // console.log('Categories:', categories);
+      console.log('Products:', catShirt);
+      // console.log('Products:', products);
+      // Set the data to state or perform other actions with the data
+      setincoming(categories);
+      setshirt(catShirt);
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+
+  tables();
   }, []);
 
   const carouselData = [
@@ -135,7 +154,7 @@ const HomeScreen = () => {
       style={{alignItems: 'center', justifyContent: 'center', margin: 10}}>
       <View style={{marginVertical: 10}}>
         <Image
-          source={{uri: item.url}}
+          source={{uri: item.picture}}
           style={{height: 150, width: 150, borderRadius: 10}}
         />
         <Ionicon
@@ -158,9 +177,11 @@ const HomeScreen = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
           }}>
-          <Text style={{color: 'black', fontFamily: 'SulphurPoint-Bold'}}>
-            {item.name}
+            <View style={{flex:1}}>
+          <Text style={{color: 'black', fontFamily: 'SulphurPoint-Bold'}} numberOfLines={2} ellipsizeMode='tail'>
+            {item.Proname}
           </Text>
+          </View>
           <View
             style={{
               flexDirection: 'row',
@@ -169,7 +190,7 @@ const HomeScreen = () => {
             }}>
             <Ionicon name="star" color={'orange'} size={15} />
             <Text style={{color: 'black', fontFamily: 'SulphurPoint-Regular'}}>
-              {item.avgRating}
+              {item.rating}
             </Text>
           </View>
         </View>
@@ -180,7 +201,7 @@ const HomeScreen = () => {
             fontSize: 16,
             marginTop: -5,
           }}>
-          ${item.price}
+          ${item.Proprice}
         </Text>
       </View>
     </TouchableOpacity>
@@ -262,6 +283,8 @@ const HomeScreen = () => {
     });
     setActiveIndex(nextIndex);
   };
+
+ 
 
   return (
     <View
@@ -379,7 +402,7 @@ const HomeScreen = () => {
           </Text>
         </View>
         <FlatList
-          data={WishlistData}
+          data={incoming}
           renderItem={renderProd}
           numColumns={2}
           style={{marginHorizontal: 10}}

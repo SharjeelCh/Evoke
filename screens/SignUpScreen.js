@@ -15,6 +15,7 @@ const SignUpScreen = ({navigation}) => {
     try {
       const user=await createUser(userName, email, password)
       console.log('User created successfully', user);
+
       navigation.navigate('login');
     } catch (error) {
       console.log('Error signing up:', error);

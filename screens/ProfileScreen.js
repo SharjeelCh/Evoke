@@ -9,7 +9,7 @@ const ProfileScreen = ({navigation}) => {
   const [name, setname] = useState(null);
   const {user} = useContext(UserContext);
 
-  const db = SQLite.openDatabase({name: 'userDB.db', location: 'default'});
+  const db = SQLite.openDatabase({name: 'evokeDB.db', location: 'default'});
   const getusername = () => {
     db.transaction(tx => {
       tx.executeSql(

@@ -1,4 +1,4 @@
-import React,{useContext,useState,useEffect} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import SplashScreen from './splashScreen';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -10,12 +10,12 @@ import SignUpScreen from './SignUpScreen';
 import OtpScreen from './OtpScreen';
 import HomeScreen from './HomeScreen';
 import BottomTab from './BottomNav';
-import { UserContext } from './UserProvider';
+import {UserContext} from './UserProvider';
 
 const Stack = createNativeStackNavigator();
 const NavStack = () => {
-  const { user, setUser } = useContext(UserContext);
-  const { isLoggedIn } = user;
+  const {user, setUser} = useContext(UserContext);
+  const {isLoggedIn} = user;
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,8 +25,13 @@ const NavStack = () => {
         const storedLoginStatus = await AsyncStorage.getItem('isLoggedIn');
         console.log('Stored Login Status:', storedLoginStatus);
         const parsedLoginStatus = JSON.parse(storedLoginStatus);
-        setUser({ isLoggedIn: parsedLoginStatus });
-      } catch (error) {
+      //  setUser({ isLoggedIn: true });
+        const storedUserData = await AsyncStorage.getItem('userData');
+        const parsedUserData = JSON.parse(storedUserData);
+        setUser({ ...parsedUserData, isLoggedIn: parsedLoginStatus });
+         
+        
+    } catch (error) {
         console.error('Error reading login status from AsyncStorage', error);
       } finally {
         setLoading(false);
@@ -43,11 +48,11 @@ const NavStack = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-
-      {isLoggedIn ? (
+        {isLoggedIn ? (
           <>
-            <Stack.Screen name="home" component={HomeScreen} />
             <Stack.Screen name="bottomtab" component={BottomTab} />
+
+            <Stack.Screen name="home" component={HomeScreen} />
           </>
         ) : (
           <>
@@ -57,8 +62,8 @@ const NavStack = () => {
             <Stack.Screen name="login" component={LoginScreen} />
             <Stack.Screen name="signup" component={SignUpScreen} />
             <Stack.Screen name="otp" component={OtpScreen} />
+            <Stack.Screen name="bottomtab" component={BottomTab} />
             <Stack.Screen name="home" component={HomeScreen} />
-        <Stack.Screen name="bottomtab" component={BottomTab} />
           </>
         )}
       </Stack.Navigator>

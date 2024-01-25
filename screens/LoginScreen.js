@@ -16,8 +16,10 @@ const LoginScreen = ({navigation}) => {
   const handleLogin = async () => {
     try {
       const user = await loginUser(email,password)
+      console.log('User data after login:', user);
       setUser(user);
       await AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
+      await AsyncStorage.setItem('userData', JSON.stringify(user));
       navigation.navigate('bottomtab')
     } catch (error) {
       console.log('Error logging in:', error);

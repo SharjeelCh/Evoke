@@ -5,7 +5,7 @@ import SQLite from 'react-native-sqlite-storage';
 import {UserContext} from './UserProvider';
 
 const ProfileScreen = ({navigation}) => {
-  const [name, setname] = useState('');
+  const [name, setname] = useState(null);
   const {user} = useContext(UserContext);
 
   const db = SQLite.openDatabase({name: 'userDB.db', location: 'default'});
@@ -19,13 +19,13 @@ const ProfileScreen = ({navigation}) => {
             setname(results.rows.item(0).Username);
           }
         },
-        (_, error) => reject(error),
+        (_, error) => (error),
       );
     });
   };
   useEffect(() => {
     getusername();
-    console.log(user.Email);
+    console.log("user email: ",user.Email);
   }, [user]);
 
   const renderMenuItem = (iconName, label, onPress) => (

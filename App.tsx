@@ -6,14 +6,12 @@ import { UserProvider } from './screens/UserProvider';
 const App = () => {
   return (
     <UserProvider>
-    <>
       <StatusBar
         barStyle="dark-content"
         backgroundColor="transparent"
         translucent={true}
       />
       <NavStack />
-    </>
     </UserProvider>
   );
 };

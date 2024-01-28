@@ -4,89 +4,21 @@ import {
   Pressable,
   FlatList,
   Image,
-  TouchableOpacity,
+  TouchableOpacity,RefreshControl, SafeAreaView, Dimensions
 } from 'react-native';
-import React from 'react';
+import React, {useState,useEffect, useContext} from 'react';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import { useSelector } from 'react-redux';
+import { fetchWishlistItemsFromSQLite } from '../SQL/userDB';
+import LottieView from 'lottie-react-native';
+import { UserContext } from './UserProvider';
 
-const WishlistData = [
-  {
-    id: '01',
-    name: 'Brown Shirt',
-    url: 'https://picsum.photos/150?random',
-    price: 29.99,
-    avgRating: 4.5,
-  },
-  {
-    id: '02',
-    name: 'Yellow Shirt',
-    url: 'https://picsum.photos/150?random=1',
-    price: 19.99,
-    avgRating: 3.8,
-  },
-  {
-    id: '03',
-    name: 'Red Jacket',
-    url: 'https://picsum.photos/150?random=2',
-    price: 49.99,
-    avgRating: 4.2,
-  },
-  {
-    id: '04',
-    name: 'Grey Shoes',
-    url: 'https://picsum.photos/150?random=3',
-    price: 39.99,
-    avgRating: 4.0,
-  },
-  {
-    id: '05',
-    name: 'Black Nigga',
-    url: 'https://picsum.photos/150?random=4',
-    price: 59.99,
-    avgRating: 4.8,
-  },
-  {
-    id: '06',
-    name: 'Blue Jeans',
-    url: 'https://picsum.photos/150?random-5',
-    price: 34.99,
-    avgRating: 4.1,
-  },
-  {
-    id: '07',
-    name: 'White Sneakers',
-    url: 'https://picsum.photos/150?random=6',
-    price: 54.99,
-    avgRating: 4.6,
-  },
-  {
-    id: '08',
-    name: 'Green Hoodie',
-    url: 'https://picsum.photos/150?random1',
-    price: 44.99,
-    avgRating: 4.4,
-  },
-  {
-    id: '09',
-    name: 'Striped T-shirt',
-    url: 'https://picsum.photos/150?random2',
-    price: 22.99,
-    avgRating: 3.9,
-  },
-  {
-    id: '10',
-    name: 'Leather Boots',
-    url: 'https://picsum.photos/150?random3',
-    price: 79.99,
-    avgRating: 4.9,
-  },
-];
 
 const renderItem = ({item}) => (
   <TouchableOpacity style={{marginHorizontal: 10}}>
     <View style={{marginVertical: 10}}>
       <Image
-        source={{uri: item.url}}
+        source={{uri: item.picture}}
         style={{height: 150, width: 150, borderRadius: 10}}
       />
       <Ionicon
@@ -110,7 +42,7 @@ const renderItem = ({item}) => (
           alignItems: 'center',
         }}>
         <Text style={{color: 'black', fontFamily: 'SulphurPoint-Bold'}}>
-          {item.name}
+          {item.Proname}
         </Text>
         <View
           style={{
@@ -120,7 +52,7 @@ const renderItem = ({item}) => (
           }}>
           <Ionicon name="star" color={'orange'} size={15} />
           <Text style={{color: 'black', fontFamily: 'SulphurPoint-Regular'}}>
-            {item.avgRating}
+            {item.rating}
           </Text>
         </View>
       </View>
@@ -131,13 +63,48 @@ const renderItem = ({item}) => (
           fontSize: 16,
           marginTop: -5,
         }}>
-        ${item.price}
+        ${item.Proprice}
       </Text>
     </View>
   </TouchableOpacity>
 );
 
 const Wishlist = ({navigation}) => {
+  const wishlistItems=useSelector(state=>state.wish.items)
+  const {user}=useContext(UserContext);
+  
+  const [item,setitem]=useState([])
+  const [refresh, setRefresh] = useState(false);
+  const width=Dimensions.get('window').width
+  const height=Dimensions.get('window').height
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchWishlistItemsFromSQLite(user.Email)
+      .then(wish => {
+        setitem(wish);
+      })
+      .catch(error => {
+        console.error('Error fetching wishlist items:', error);
+      })
+      .finally(() => {
+        setRefreshing(false);
+      });
+  }, []);
+
+  useEffect(()=>{
+    fetchWishlistItemsFromSQLite(user.Email)
+    .then(wish => {
+      setitem(wish);
+    })
+    .catch(error => {
+      console.error('Error getting user info:', error);
+    });
+  },[refresh])
+
+  
+
   return (
     <View style={{flex: 1, backgroundColor: 'white', paddingTop: 60}}>
       <View
@@ -169,7 +136,38 @@ const Wishlist = ({navigation}) => {
         <View></View>
       </View>
       <View style={{marginHorizontal: 10, marginTop: 20}}>
-        <FlatList data={WishlistData} renderItem={renderItem} numColumns={2} />
+        <FlatList  refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+          ListEmptyComponent={()=>{return(
+            <SafeAreaView style={{backgroundColor: 'white', flex: 1,justifyContent:'center',alignItems:'center'}}>
+            <LottieView
+              source={require('../assets/Animation - 1706364838004.json')}
+              // ref={animation}
+              style={{
+                height: width/5.9,
+                width: height/5.9,
+                alignSelf: 'center',
+                marginTop: 100,
+                justifyContent: 'center',
+                opacity:0.7
+              }}
+              autoPlay
+              loop={false}
+              speed={0.7}
+            />
+            <Text
+              style={{
+                marginTop: 20,
+                fontSize: 19,
+                fontWeight: '600',
+                textAlign: 'center',
+                fontFamily: 'SulphurPoint-Bold'
+              }}>
+            </Text>
+          </SafeAreaView>
+          )}}
+         data={item} renderItem={renderItem} numColumns={2} />
       </View>
     </View>
   );

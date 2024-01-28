@@ -1,4 +1,7 @@
+import {useContext} from 'react';
 import SQLite from 'react-native-sqlite-storage';
+import {UserContext} from '../screens/UserProvider';
+import { ToastAndroid } from 'react-native';
 
 const db = SQLite.openDatabase(
   {name: 'evokeDB.db', location: 'default'},
@@ -12,6 +15,7 @@ const db = SQLite.openDatabase(
 
 export const createTable = () => {
   db.transaction(tx => {
+
     tx.executeSql(
       'CREATE TABLE IF NOT EXISTS Users (UserId INTEGER PRIMARY KEY AUTOINCREMENT, Username varchar(100), Email varchar(50), Password varchar(20))',
       [],
@@ -22,6 +26,9 @@ export const createTable = () => {
         console.log('Error while creating table:', error);
       },
     );
+    createTrigger();
+
+
     tx.executeSql(
       'CREATE TABLE IF NOT EXISTS UserLogs (LogId INTEGER PRIMARY KEY AUTOINCREMENT, Event varchar(50), Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)',
       [],
@@ -30,6 +37,26 @@ export const createTable = () => {
       },
       (_, error) => {
         console.log('Error while creating UserLogs table:', error);
+      },
+    );
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS userCart (cartId INTEGER PRIMARY KEY AUTOINCREMENT, UserId INTEGER, proid INTEGER UNIQUE, Proname varchar(100), Proprice REAL, proSize varchar(10), rating REAL,proQuantity INTEGER, picture varchar(500), catid INTEGER, FOREIGN KEY (UserId) REFERENCES Users(UserId))',
+      [],
+      (_, results) => {
+        console.log('userCart table created successfully: ');
+      },
+      (_, error) => {
+        console.log('Error while creating userCart table:', error);
+      },
+    );
+    tx.executeSql(
+      'CREATE TABLE IF NOT EXISTS userWishlist (wishId INTEGER PRIMARY KEY AUTOINCREMENT, UserId INTEGER, proid INTEGER UNIQUE, Proname varchar(100), Proprice REAL, rating REAL, picture varchar(500), FOREIGN KEY (UserId) REFERENCES Users(UserId))',
+      [],
+      (_, results) => {
+        console.log('userWishlist table created successfully: ');
+      },
+      (_, error) => {
+        console.log('Error while creating userWishlist table:', error);
       },
     );
 
@@ -45,6 +72,7 @@ export const createTable = () => {
         console.log('User creation trigger created successfully: ');
       },
       (_, error) => {
+        ToastAndroid.show('Email must be a Gmail address', ToastAndroid.BOTTOM  )
         console.log('Error creating user creation trigger:', error);
       },
     );
@@ -61,6 +89,27 @@ export const createTable = () => {
     });
   });
 };
+const createTrigger = () => {
+  db.transaction(tx => {
+    tx.executeSql(
+      `CREATE TRIGGER IF NOT EXISTS CheckEmail
+      BEFORE INSERT ON Users
+      WHEN NEW.Email NOT LIKE '%@gmail.com'
+      BEGIN
+        SELECT RAISE(ABORT, 'Email must be a Gmail address');
+      END;
+      `,
+      [],
+      () => {
+        console.log('Trigger created successfully');
+      },
+      (error) => {
+        console.log('Error creating trigger:', error);
+      }
+    );
+  });
+};
+
 
 export const createUser = (username, email, password) => {
   return new Promise((resolve, reject) => {
@@ -94,4 +143,198 @@ export const loginUser = (email, password) => {
   });
 };
 
+export const cartDB = (product, id, size) => {
+  db.transaction(tx => {
+    tx.executeSql(
+      'INSERT INTO userCart (UserId, proid, Proname, Proprice, proSize, rating, picture, catid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [
+        id,
+        product.proid,
+        product.Proname,
+        product.Proprice,
+        size,
+        product.rating,
+        product.picture,
+        product.catid,
+      ],
+      (_, results) => {
+        console.log('Data inserted successfully into userCart');
+      },
+      (_, error) => {
+        console.error('Error inserting data into userCart:', error);
+      },
+    );
+  });
+};
+
+export const wishDB = (product, id) => {
+  db.transaction(tx => {
+    tx.executeSql(
+      'INSERT INTO userWishlist (UserId, proid, Proname, Proprice, rating, picture) VALUES (?, ?, ?, ?, ?, ?)',
+      [
+        id,
+        product.proid,
+        product.Proname,
+        product.Proprice,
+        product.rating,
+        product.picture,
+      ],
+      (_, results) => {
+        console.log('Data inserted successfully into userWishlist');
+      },
+      (_, error) => {
+        console.error('Error inserting data into userWishlist:', error);
+      },
+    );
+  });
+};
+
+export const validateCart = () => {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT proid from userCart',
+        [],
+        (_, results) => {
+        
+          const proIds = [];
+          for (let i = 0; i < results.rows.length; i++) {
+            proIds.push(results.rows.item(i).proid);
+          }
+            
+            resolve(proIds);;
+          
+        },
+        (_, error) => {
+          console.error('Error validating proID :', error);
+          reject(error)
+        },
+      );
+    });
+  });
+};
+
+export const fetchCartItemsFromSQLite = (id) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'SELECT * FROM userCart inner join Users on userCart.UserId = Users.UserId where Users.Email = ?',
+        [id],
+        (tx, results) => {
+          const len = results.rows.length;
+          const items = [];
+          for (let i = 0; i < len; i++) {
+            const row = results.rows.item(i);
+            items.push(row);
+          }
+          resolve(items); 
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+export const fetchWishlistItemsFromSQLite = (id) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'SELECT * FROM userWishlist inner join Users on userWishList.UserId = Users.UserId where Users.Email = ?',
+        [id],
+        (tx, results) => {
+          const len = results.rows.length;
+          const items = [];
+          for (let i = 0; i < len; i++) {
+            const row = results.rows.item(i);
+            items.push(row);
+          }
+          resolve(items); 
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+export const searchitemfromDB = (searchQuery) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'SELECT * FROM products where Proname LIKE ?',
+        [`%${searchQuery}%`],
+        (tx, results) => {
+          const len = results.rows.length;
+          const items = [];
+          for (let i = 0; i < len; i++) {
+            const row = results.rows.item(i);
+            items.push(row);
+          }
+          resolve(items); 
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+
+export const searchItemfromDB = (searchQuery) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `CREATE PROCEDURE IF NOT EXISTS searchitem (@searchQuery TEXT) 
+        BEGIN 
+          SELECT * FROM products WHERE Proname LIKE @searchQuery;'; 
+        END;`
+        [`%${searchQuery}%`],
+        (tx, results) => {
+        },
+        (error) => {
+          reject(error);
+        }
+      ),
+      tx.executeSql(
+        `CALL searchitem(?)'`,
+        [searchQuery],
+        (tx, results) => {
+          const len = results.rows.length;
+          const items = [];
+          for (let i = 0; i < len; i++) {
+            const row = results.rows.item(i);
+            items.push(row);
+          }
+          resolve(items); 
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
+export const executeProcedures = (searchQuery) => {
+  return new Promise((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `CALL searchitem(?)'`,
+        [searchQuery],
+        (tx, results) => {
+          const len = results.rows.length;
+          const items = [];
+          for (let i = 0; i < len; i++) {
+            const row = results.rows.item(i);
+            items.push(row);
+          }
+          resolve(items); 
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+};
 export default db;

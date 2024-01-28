@@ -10,16 +10,23 @@ const DataFetch = () => {
   const [incoming, setincoming] = useState([]);
   const [shirt, setshirt] = useState([]);
   const [selectedCategroy, setSelectedCategory] = useState(null);
+  let offset = 0;
+  const limit = 25;
+  let hasMoreProducts = true;
 
-  const categories = ['shirt', 'jacket'];
+
+
+  const categories = ['shirt', 'hat','trouser','hoodie','pant','suit'];
   const db = SQLite.openDatabase({name: 'evokeDB.db', location: 'default'});
 
+  
   const fetchData = async category => {
-    const url = `https://kohls.p.rapidapi.com/products/list?limit=1000&offset=12&keyword=${category}&sortID=1`; // change  keyword for filter
+    while (hasMoreProducts) {
+    const url = `https://kohls.p.rapidapi.com/products/list?limit=${limit}&offset=${offset}&keyword=${category}`; // change  keyword for filter
     const options = {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': '7b2ea8df32msh3f9eeb6fbf86637p1dcfd3jsn6366f455d20c',
+        'X-RapidAPI-Key': '201a32a6camsh0e01c8c23c55838p184e9fjsn00792122155e',
         'X-RapidAPI-Host': 'kohls.p.rapidapi.com',
       },
     };
@@ -28,9 +35,8 @@ const DataFetch = () => {
       const response = await fetch(url, options);
       const result = await response.json();
 
-      if (result && result.payload && result.payload.products) {
-        setData1(result.payload.products);
-
+      if (result && result.payload && result.payload.products  && result.payload.products.length > 0) {
+        setData1(prevData => [...prevData, ...result.payload.products]);
         ///////
 
         db.transaction(tx => {
@@ -83,6 +89,9 @@ const DataFetch = () => {
                   (_, resultSet) => {
                     console.log(
                       `Product '${product.productTitle}' inserted successfully`,
+                      tx.executeSql('COMMIT;', [], () => {
+                        console.log('Transaction committed successfully');
+                      })
                     );
                   },
                   (_, error) => {
@@ -98,31 +107,22 @@ const DataFetch = () => {
 
         ///////
         // console.log(data1);
+        offset += limit;
+       
       } else {
+        hasMoreProducts = false;
         console.error('No products found for category:', category);
       }
     } catch (error) {
+      hasMoreProducts = false;
       console.error(error);
     }
   };
+}
 
   useEffect(() => {
-    selectProducts()
-      .then(({categories, catShirt}) => {
-        // Now you have categories and products data
-        // console.log('Categories:', categories);
-        console.log('Products:', catShirt);
-        // console.log('Products:', products);
-        // Set the data to state or perform other actions with the data
-        setincoming(categories);
-        setshirt(catShirt);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-
     tables();
-    /*const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
     const fetchDataWithDelay = async (category, delayTime) => {
       await fetchData(category);
@@ -130,8 +130,8 @@ const DataFetch = () => {
     };
 
     categories.forEach((category, index) => {
-      fetchDataWithDelay(category, index * 0); // Waits for 1 second between each request
-    });  */
+      fetchDataWithDelay(category, index * 1000); // Waits for 1 second between each request
+    });  
   }, []);
 
   class ProductItem extends React.PureComponent {
@@ -157,15 +157,9 @@ const DataFetch = () => {
   const MemoizedProductItem = React.memo(ProductItem);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{}}>
  
 
-      <FlatList
-        data={incoming}
-        renderItem={({item}) => <MemoizedProductItem item={item} />}
-        keyExtractor={item => item.UniqueId.toString()}
-        numColumns={2}
-      />
     </View>
   );
 };

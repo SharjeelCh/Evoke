@@ -7,36 +7,157 @@ import {
   Image,
   FlatList,
   ScrollView,
+  Pressable,
 } from 'react-native';
-import React, {useEffect, useState, useRef} from 'react';
+import {UserContext} from './UserProvider';
+import React, {useEffect, useState, useContext, useRef} from 'react';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import {LogBox} from 'react-native';
-import { tables } from '../SQL/tables';
-import { selectProducts } from '../SQL/selectProducts';
+import {insertintoproducts, showtables1, Tables} from '../SQL/tables';
+import {useDispatch} from 'react-redux';
+import {seedetail} from '../ReduxManagement/DetailReducer';
+import {useNavigation} from '@react-navigation/native';
+import DataFetch from '../SQL/DataFetch';
+import db, {cartDB, createTable, executeProcedures, searchitemfromDB, searchitemfromDBusingProcedures} from '../SQL/userDB';
+import { products } from '../SQL/Array';
+import { selectShirt, selectall, selectcap, selecthoodie, selectpent, selectsuit, selecttrouser } from '../SQL/selectShirt';
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
   const width = Dimensions.get('window').width;
+  const dispatch = useDispatch();
+
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef(null);
   const [incoming, setincoming] = useState([]);
   const [shirt, setshirt] = useState([]);
+  const [cap, setcap] = useState([]);
+  const [pent, setpent] = useState([]);
+  const [hoodie, sethoodie] = useState([]);
+  const [trouser, settrouser] = useState([]);
+  const [suit, setsuit] = useState([]);
+  const [showsearch, setsearch] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const categories = ['shirt', 'hat','trouser','hoodie','pant','suit'];
+
+
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    selectProducts()
-    .then(({categories, catShirt}) => {
-      // Now you have categories and products data
-      // console.log('Categories:', categories);
-      console.log('Products:', catShirt);
-      // console.log('Products:', products);
-      // Set the data to state or perform other actions with the data
-      setincoming(categories);
-      setshirt(catShirt);
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
+    createTable();
+    db.transaction(tx => {
+      categories.forEach((categoryName, index) => {
+        tx.executeSql(
+          'INSERT OR IGNORE INTO categories (catid, name) VALUES (?, ?);',
+          [index + 1, categoryName],
+          (_, resultSet) => {
+            console.log(`Category '${categoryName}' inserted successfully`);
+          },
+          (_, error) => {
+            console.error('Error inserting category:', error);
+          },
+        );
+      });
     });
+    db.transaction((tx) => {
+      Object.keys(products).forEach((key) => {
+        products[key].forEach((product) => {
+          tx.executeSql(
+            'INSERT OR IGNORE INTO products (UniqueId, Proname, Proprice, rating, picture, catid) VALUES (?,?,?,?,?,?)',
+            [product.WebID, product.Name, product.Price.minPrice, product.Rating, product.URL, product.catid],
+            (tx, results) => {
+              console.log('Results', results.rowsAffected);
+              if (results.rowsAffected > 0) {
+                console.log('Product inserted successfully');
+              } else {
+                console.log('Product already exists');
+              }
+            },
+            (error) => {
+              console.log('Error inserting product:', error.message);
+            }
+          );
+        });
+      });
+    });
+     
+    selectall()
+      .then(
+        (categories,
+        ) => {
+          setincoming(categories);
+        },
+      )
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+      selectShirt()
+      .then(
+        (categories,
+        ) => {
+          setshirt(categories);
+        },
+      )
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+      selectcap()
+      .then(
+        (categories,
+        ) => {
+          setcap(categories);
+        },
+      )
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+      selecttrouser()
+      .then(
+        (categories,
+        ) => {
+          settrouser(categories);
+        },
+      )
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+      selecthoodie()
+      .then(
+        (categories,
+        ) => {
+          sethoodie(categories);
+        },
+      )
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+      selectpent()
+      .then(
+        (categories,
+        ) => {
+          setpent(categories);
+        },
+      )
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+      selectsuit()
+      .then(
+        (categories,
+        ) => {
+          setsuit(categories);
+        },
+      )
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
 
-  tables();
+       Tables()         // uncomment this to truncate cart and wishlist
+
+   // showtables1();
+    console.log('search: ', searchResults);
   }, []);
 
   const carouselData = [
@@ -53,7 +174,7 @@ const HomeScreen = () => {
       name: 'Shirts',
       image: require('../assets/categoryicons/clothes.png'),
     },
-    {id: '02', name: 'Cap', image: require('../assets/categoryicons/cap.png')},
+    {id: '02', name: 'Cap', image: require('../assets/categoryicons/cap.png'),},
     {
       id: '03',
       name: 'Trousers',
@@ -61,7 +182,7 @@ const HomeScreen = () => {
     },
     {
       id: '04',
-      name: 'T-Shirt',
+      name: 'Hoodies',
       image: require('../assets/categoryicons/tshirt.png'),
     },
     {
@@ -76,111 +197,36 @@ const HomeScreen = () => {
     },
   ];
 
-  const WishlistData = [
-    {
-      id: '01',
-      name: 'Brown Shirt',
-      url: 'https://picsum.photos/150?random',
-      price: 29.99,
-      avgRating: 4.5,
-    },
-    {
-      id: '02',
-      name: 'Yellow Shirt',
-      url: 'https://picsum.photos/150?random=1',
-      price: 19.99,
-      avgRating: 3.8,
-    },
-    {
-      id: '03',
-      name: 'Red Jacket',
-      url: 'https://picsum.photos/150?random=2',
-      price: 49.99,
-      avgRating: 4.2,
-    },
-    {
-      id: '04',
-      name: 'Grey Shoes',
-      url: 'https://picsum.photos/150?random=3',
-      price: 39.99,
-      avgRating: 4.0,
-    },
-    {
-      id: '05',
-      name: 'Black Nigga',
-      url: 'https://picsum.photos/150?random=4',
-      price: 59.99,
-      avgRating: 4.8,
-    },
-    {
-      id: '06',
-      name: 'Blue Jeans',
-      url: 'https://picsum.photos/150?random-5',
-      price: 34.99,
-      avgRating: 4.1,
-    },
-    {
-      id: '07',
-      name: 'White Sneakers',
-      url: 'https://picsum.photos/150?random=6',
-      price: 54.99,
-      avgRating: 4.6,
-    },
-    {
-      id: '08',
-      name: 'Green Hoodie',
-      url: 'https://picsum.photos/150?random1',
-      price: 44.99,
-      avgRating: 4.4,
-    },
-    {
-      id: '09',
-      name: 'Striped T-shirt',
-      url: 'https://picsum.photos/150?random2',
-      price: 22.99,
-      avgRating: 3.9,
-    },
-    {
-      id: '10',
-      name: 'Leather Boots',
-      url: 'https://picsum.photos/150?random3',
-      price: 79.99,
-      avgRating: 4.9,
-    },
-  ];
+  const handleProductDetail = product => {
+    dispatch(seedetail(product));
+  };
 
   const renderProd = ({item}) => (
     <TouchableOpacity
+      onPress={() => {
+        handleProductDetail(item);
+        navigation.navigate('product', item.proid);
+      }}
       style={{alignItems: 'center', justifyContent: 'center', margin: 10}}>
       <View style={{marginVertical: 10}}>
         <Image
           source={{uri: item.picture}}
           style={{height: 150, width: 150, borderRadius: 10}}
         />
-        <Ionicon
-          name="heart"
-          color={'#008080'}
-          size={20}
-          style={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-            backgroundColor: 'rgba(255,255,255,0.6)',
-            borderRadius: 25,
-            padding: 5,
-            alignSelf: 'center',
-          }}
-        />
+
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}>
-            <View style={{flex:1}}>
-          <Text style={{color: 'black', fontFamily: 'SulphurPoint-Bold'}} numberOfLines={2} ellipsizeMode='tail'>
-            {item.Proname}
-          </Text>
+          <View style={{flex: 1}}>
+            <Text
+              style={{color: 'black', fontFamily: 'SulphurPoint-Bold'}}
+              numberOfLines={2}
+              ellipsizeMode="tail">
+              {item.Proname}
+            </Text>
           </View>
           <View
             style={{
@@ -208,10 +254,10 @@ const HomeScreen = () => {
   );
 
   const renderCat = ({item}) => (
-    <View>
+    <TouchableOpacity onPress={() => setSelectedCategory(item)}>
       <View
         style={{
-          backgroundColor: 'rgba(0, 128, 128,0.2),',
+          backgroundColor: selectedCategory && selectedCategory.id === item.id ? 'rgba(0, 128, 128,0.5)' : 'rgba(0, 128, 128,0.2)',
           borderRadius: 100,
           padding: 15,
           margin: 10,
@@ -232,7 +278,7 @@ const HomeScreen = () => {
         }}>
         {item.name}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderItem = ({item}) => (
@@ -284,7 +330,42 @@ const HomeScreen = () => {
     setActiveIndex(nextIndex);
   };
 
- 
+  const handleSearch = async query => {
+    try {
+      if (query.trim() !== '') {
+        const items = await searchitemfromDB(query);
+        setSearchResults(items);
+        console.log('found ', items.length, ' items');
+        console.log(searchResults);
+        setsearch(false);
+      } else {
+        setSearchResults([]);
+        setsearch(true);
+      }
+    } catch (error) {
+      console.error(`Error occurred while searching: ${error}`);
+    }
+  };
+  const getProductsByCategory = (category) => {
+    switch(category) {
+      case 'Shirts':
+        return shirt;
+      case 'Cap':
+        return cap;
+      case 'Trousers':
+        return trouser;
+      case 'Hoodies':
+        return hoodie;
+      case 'Pants': 
+
+        return pent;
+      case 'Suits':
+        return suit;
+      // Add cases for other categories as needed
+      default:
+        return [];
+    }
+  };
 
   return (
     <View
@@ -315,6 +396,15 @@ const HomeScreen = () => {
           <TextInput
             placeholder="Search"
             placeholderTextColor={'grey'}
+            onChangeText={text => {
+              if (text.length != 0) {
+                setsearch(false);
+                setSearchQuery(text);
+                handleSearch(searchQuery);
+              } else {
+                setsearch(true);
+              }
+            }}
             style={{
               fontFamily: 'SulphurPoint-Bold',
               color: 'black',
@@ -341,73 +431,199 @@ const HomeScreen = () => {
           />
         </TouchableOpacity>
       </View>
-      <ScrollView>
-        <View style={{marginHorizontal: 0}}>
-          <FlatList
-            ref={ref => (flatListRef.current = ref)}
-            data={carouselData}
-            renderItem={renderItem}
-            horizontal
-            pagingEnabled={true}
-            onMomentumScrollEnd={scrollToNext}
-            onScroll={handlePageChange}
-            showsHorizontalScrollIndicator={false}
-          />
+      {showsearch ? (
+        <ScrollView>
+          <View style={{marginHorizontal: 0}}>
+            <FlatList
+              ref={ref => (flatListRef.current = ref)}
+              data={carouselData}
+              renderItem={renderItem}
+              horizontal
+              pagingEnabled={true}
+              onMomentumScrollEnd={scrollToNext}
+              onScroll={handlePageChange}
+              showsHorizontalScrollIndicator={false}
+            />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 10,
+              }}>
+              <RenderDotIndicator />
+            </View>
+          </View>
           <View
             style={{
               flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginHorizontal: 25,
+              marginTop: 15,
               alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 10,
             }}>
-            <RenderDotIndicator />
+            <Text
+              style={{
+                color: 'black',
+                fontFamily: 'SulphurPoint-Bold',
+                fontSize: 20,
+              }}>
+              Catergory
+            </Text>
+            <TouchableOpacity onPress={()=>{setSelectedCategory(null)}}>
+            <Text style={{color: '#008080', fontFamily: 'SulphurPoint-Bold'}}>
+              See All
+            </Text>
+            </TouchableOpacity>
           </View>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 25,
-            marginTop: 15,
-            alignItems: 'center',
-          }}>
-          <Text
-            style={{
-              color: 'black',
-              fontFamily: 'SulphurPoint-Bold',
-              fontSize: 20,
-            }}>
-            Catergory
-          </Text>
-          <Text style={{color: '#008080', fontFamily: 'SulphurPoint-Bold'}}>
-            See All
-          </Text>
-        </View>
-        <View style={{marginHorizontal: 20}}>
+          <View style={{marginHorizontal: 20}}>
+            <FlatList
+              data={categoryData}
+              renderItem={renderCat}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            />
+          </View>
+          <View style={{marginHorizontal: 25, marginTop: 15}}>
+            <Text
+              style={{
+                color: 'black',
+                fontFamily: 'SulphurPoint-Bold',
+                fontSize: 20,
+              }}>
+              New Arrival
+            </Text>
+          </View>
           <FlatList
-            data={categoryData}
-            renderItem={renderCat}
-            horizontal
-            showsHorizontalScrollIndicator={false}
+            data={selectedCategory ? getProductsByCategory(selectedCategory.name) : incoming}
+            renderItem={renderProd}
+            numColumns={2}
+            style={{marginHorizontal: 10}}
+          />
+        </ScrollView>
+      ) : (
+        <View style={{flex: 1}}>
+          <View
+            style={{
+              marginTop: width / 26,
+              marginLeft: width / 14,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: width / 27,
+            }}>
+            <Text
+              style={{
+                fontSize: 19,
+                fontFamily: 'SulphurPoint-Bold',
+                color: 'black',
+              }}>
+              Results For "{searchQuery}"
+            </Text>
+            <Text
+              style={{
+                fontSize: 19,
+                fontFamily: 'SulphurPoint-Bold',
+                color: 'black',
+                marginRight: width / 18,
+              }}>
+              {searchResults.length} items
+            </Text>
+          </View>
+          <FlatList
+            data={searchResults}
+            showsVerticalScrollIndicator={false}
+            renderItem={({item}) => {
+              return (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    borderBottomWidth: 0.2,
+                    borderColor: 'grey',
+                    justifyContent: 'space-between',
+                    marginRight: width / 20,
+                    marginLeft: width / 20,
+
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      paddingVertical: width / 23,
+
+                      justifyContent: 'flex-start',
+                    }}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        handleProductDetail(item);
+                        navigation.navigate('product', item.proid);
+                      }}>
+                      <Image
+                        source={{uri: item.picture}}
+                        style={{
+                          height: width / 8,
+                          width: width / 8,
+                          borderRadius: 12,
+                        }}
+                      />
+                    </TouchableOpacity>
+                    <View>
+                      <Text
+                        style={{
+                          color: 'black',
+                          fontFamily: 'SulphurPoint-Bold',
+                          fontSize: 18,
+                          marginLeft: width / 27,
+                        }}>
+                        {item.Proname.split(' ').slice(0, 4).join(' ')}
+                      </Text>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          marginLeft: width / 27,
+                          marginTop: width / 67,
+                        }}>
+                        <Ionicon color={'orange'} size={17} name="star" />
+                        <Text
+                          style={{
+                            color: 'black',
+                            fontFamily: 'SulphurPoint-Bold',
+                            fontSize: 16,
+                            marginLeft: width / 70,
+                          }}>
+                          {item.rating}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginBottom: 0,
+                      }}>
+                      <Pressable
+                        style={{backgroundColor: '#008080', borderRadius: 5}}
+                        onPress={() => {
+                          handleProductDetail(item);
+                          navigation.navigate('product', item.proid);
+                        }}>
+                        <Ionicon
+                          color={'white'}
+                          size={25}
+                          name="chevron-forward-outline"
+                        />
+                      </Pressable>
+                    </View>
+                  </View>
+                </View>
+              );
+            }}
           />
         </View>
-        <View style={{marginHorizontal: 25, marginTop: 15}}>
-          <Text
-            style={{
-              color: 'black',
-              fontFamily: 'SulphurPoint-Bold',
-              fontSize: 20,
-            }}>
-            New Arrival
-          </Text>
-        </View>
-        <FlatList
-          data={incoming}
-          renderItem={renderProd}
-          numColumns={2}
-          style={{marginHorizontal: 10}}
-        />
-      </ScrollView>
+      )}
     </View>
   );
 };

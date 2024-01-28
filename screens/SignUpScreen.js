@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, ToastAndroid} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {Jiro} from 'react-native-textinput-effects';
 import Ionicon from 'react-native-vector-icons/Ionicons';
@@ -18,6 +18,7 @@ const SignUpScreen = ({navigation}) => {
 
       navigation.navigate('login');
     } catch (error) {
+      ToastAndroid.show('Please Enter correct data', ToastAndroid.BOTTOM  )
       console.log('Error signing up:', error);
     }
   };

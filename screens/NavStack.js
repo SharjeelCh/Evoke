@@ -11,6 +11,12 @@ import OtpScreen from './OtpScreen';
 import HomeScreen from './HomeScreen';
 import BottomTab from './BottomNav';
 import {UserContext} from './UserProvider';
+import { Provider } from 'react-redux';
+import { store } from '../ReduxManagement/store';
+import ProductScreen from './ProductScreen';
+import Wishlist from './Wishlist';
+import ConfirmScreen from './ConfirmScreen';
+import OrderAnimation from './OrderAnimation';
 
 const Stack = createNativeStackNavigator();
 const NavStack = () => {
@@ -46,6 +52,7 @@ const NavStack = () => {
   }
 
   return (
+    <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {isLoggedIn ? (
@@ -53,6 +60,13 @@ const NavStack = () => {
             <Stack.Screen name="bottomtab" component={BottomTab} />
 
             <Stack.Screen name="home" component={HomeScreen} />
+            <Stack.Screen name="product" component={ProductScreen} />
+            <Stack.Screen name="order" component={ConfirmScreen} />
+            <Stack.Screen name="animation" component={OrderAnimation} />
+
+
+
+            
           </>
         ) : (
           <>
@@ -64,10 +78,17 @@ const NavStack = () => {
             <Stack.Screen name="otp" component={OtpScreen} />
             <Stack.Screen name="bottomtab" component={BottomTab} />
             <Stack.Screen name="home" component={HomeScreen} />
+            <Stack.Screen name="product" component={ProductScreen} />
+            <Stack.Screen name="order" component={ConfirmScreen} />
+            <Stack.Screen name="animation" component={OrderAnimation} />
+
+        
+
           </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 };
 

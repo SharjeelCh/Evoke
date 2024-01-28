@@ -19,7 +19,7 @@ const createTables = () => {
       },
     );
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS products (proid INTEGER PRIMARY KEY AUTOINCREMENT,UniqueId INTEGER, Proname varchar(100), Proprice REAL, rating REAL, picture varchar(500), catid INTEGER, FOREIGN KEY (catid) REFERENCES categories(catid))',
+      'CREATE TABLE IF NOT EXISTS products (proid INTEGER PRIMARY KEY AUTOINCREMENT, UniqueId INTEGER UNIQUE, Proname varchar(100), Proprice REAL, rating REAL, picture varchar(500), catid INTEGER, FOREIGN KEY (catid) REFERENCES categories(catid))',
       [],
       (tx, results) => {console.log("Products created");},
       (tx, error) => {
@@ -28,6 +28,7 @@ const createTables = () => {
     );
   });
 };
+
 
 const showtables=()=>{
   db.transaction(tx => {
@@ -62,28 +63,75 @@ const showtables=()=>{
       },
     );
   });
+  db.transaction(tx => {
+    tx.executeSql(
+      'SELECT * FROM userCart;',
+      [],
+      (_, results) => {
+        const item=results.rows.raw();
+        console.log("cart: ",item)
+      
+      },
+      (_, error) => {
+        console.log('Error while selecting from userCart:', error);
+      },
+    );
+  });
     
 }
-
-const deletetable=()=>{
-  // Truncate the categories table
+export const insertintoproducts =(protype, prodata)=>{
+  db.transaction((tx)=>{
+    prodata.forEach((product, index) => {
+      tx.executeSql(
+        'INSERT OR IGNORE INTO products (proid,UniqueId, Proname, Proprice, rating, picture, catid) VALUES (?, ?, ?, ?, ?, ?,?);',
+        [
+          index + 1,
+          product.webID,
+          product.Name,
+          product.prices.minPrice,
+          product.Rating.avgRating,
+          product.URL,
+          product.catid,
+        ],
+        (_, resultSet) => {
+          console.log(
+            `Product '${product.productTitle}' inserted successfully`,
+            tx.executeSql('COMMIT;', [], () => {
+              console.log('Transaction committed successfully');
+            })
+          );
+        },
+        (_, error) => {
+          console.error('Error inserting product:', error);
+        },
+      );
+    })
+  })
+}
 db.transaction(tx => {
   tx.executeSql(
-    'DELETE FROM categories;',
+    'SELECT * FROM userWishlist;',
     [],
     (_, results) => {
-      console.log('Categories table truncated successfully.');
+      const item=results.rows.raw();
+      console.log("wishlist: ",item)
+    
     },
     (_, error) => {
-      console.log('Error while truncating categories table:', error);
+      console.log('Error while selecting from userCart:', error);
     },
   );
 });
+  
+
+
+const deletetable=()=>{
+  // Truncate the categories table
 
 // Truncate the products table
 db.transaction(tx => {
   tx.executeSql(
-    'DELETE FROM products;',
+    'Delete from products;',
     [],
     (_, results) => {
       console.log('Products table truncated successfully.');
@@ -96,11 +144,11 @@ db.transaction(tx => {
 
 }
 
-export const tables = () => {
+export const Tables = () => {
+ // deletetable();
   createTables();
  showtables();
-  //deletetable();
-};
+}
 export const showtables1 = () => {
   showtables();
 };

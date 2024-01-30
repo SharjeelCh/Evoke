@@ -53,7 +53,7 @@ function ConfirmScreen({route, navigation}) {
     try {
       const userId = await getUserinfo();
 
-      insertintouserTransaction(userId, item, quantity, paymentMethod,address);
+      insertintouserTransaction(userId, item, quantity, methodPay,address,price);
     } catch (error) {
       console.error('Error getting user info:', error);
     }
@@ -667,6 +667,7 @@ function ConfirmScreen({route, navigation}) {
                     onPress={() => {
                       setA(3);
                       seta2(2.5);
+                    setMethodPay('Cash');
 
                       setactiveButton2(false);
                     }}>
@@ -675,7 +676,7 @@ function ConfirmScreen({route, navigation}) {
                 ) : (
                   <Pressable
                     onPress={() => {
-                      setpaymentMethod('Cash');
+                      setMethodPay('Cash');
                     }}
                     style={{marginLeft: width / 20, marginRight: width / 20}}>
                     <Icon name="circle-dot" size={22} color={'grey'} />

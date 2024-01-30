@@ -197,7 +197,7 @@ export const wishDB = (product, id) => {
     );
   });
 };
-export const insertintouserTransaction = (id,proItem,quantity,methodpay,address) => {
+export const insertintouserTransaction = (id,proItem,quantity,methodpay,address,price) => {
   db.transaction(tx => {
     tx.executeSql(
       'INSERT INTO userTransaction ( UserID, proid, Proname ,Proprice, proSize, rating, proQuantity ,picture, catid, MethodPay, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)',
@@ -205,7 +205,7 @@ export const insertintouserTransaction = (id,proItem,quantity,methodpay,address)
         id,
         proItem.proid,
         proItem.Proname,
-        proItem.Proprice,
+        price,
         proItem.proSize,
         proItem.rating,
         quantity,

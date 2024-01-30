@@ -63,21 +63,7 @@ const HomeScreen = () => {
   useEffect(() => {
 
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    createTable();
-    db.transaction(tx => {
-      tx.executeSql(
-        'SELECT * FROM userTransaction;',
-        [],
-        (_, results) => {
-          const item=results.rows.raw();
-          console.log("transaction: ",item)
-        
-        },
-        (_, error) => {
-          console.log('Error while selecting from userCart:', error);
-        },
-      );
-    });
+    createTable(); 
    /* db.transaction(tx => {
       categories.forEach((categoryName, index) => {
         tx.executeSql(

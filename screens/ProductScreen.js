@@ -38,7 +38,7 @@ const ProductScreen = ({navigation, route}) => {
     try {
       const userId = await getUserinfo();
       if (val.includes(product.proid)) {
-        ToastAndroid.show('Already in Cart', ToastAndroid.BOTTOM);
+        ToastAndroid.show('Already in Cart', ToastAndroid.SHORT);
       } else {
         dispatch(addToCart(product));
         cartDB(product, userId, selectedSize);
@@ -117,7 +117,7 @@ const ProductScreen = ({navigation, route}) => {
           style={{
             color: 'white',
             fontSize: 23,
-            fontWeight:'600',
+            fontWeight: '600',
             fontFamily: 'SulphurPoint-Bold',
           }}>
           Product Details

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   Dimensions,
   Image,
@@ -7,14 +7,32 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  Modal,
   Touchable,
   TouchableOpacity,
   useColorScheme,
+  TextInput,
   View,
+  Alert,
+  ToastAndroid,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+import {UserContext} from './UserProvider';
+import db, {deleteCart, insertintouserTransaction} from '../SQL/userDB';
 
-function ConfirmScreen({navigation}) {
+function ConfirmScreen({route, navigation}) {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const {item} = route.params;
+  const {price} = route.params;
+  const {quantity} = route.params;
+  const {user} = useContext(UserContext);
+  const [name, setname] = useState(null);
+  const [address, setaddress] = useState(null);
+  const [timing, settiming] = useState(null);
+  const [paymentMethod, setpaymentMethod] = useState(null);
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
   const [pageno, setpageno] = useState(0);
@@ -30,10 +48,165 @@ function ConfirmScreen({navigation}) {
   const [activeButton3, setactiveButton3] = useState(true);
   const [a2, seta2] = useState(0);
   const [methodPay, setMethodPay] = useState('');
+
+  const handleTransaction = async () => {
+    try {
+      const userId = await getUserinfo();
+
+      insertintouserTransaction(userId, item, quantity, paymentMethod,address);
+    } catch (error) {
+      console.error('Error getting user info:', error);
+    }
+  };
+  const getUserinfo = () => {
+    return new Promise((resolve, reject) => {
+      db.transaction(tx => {
+        tx.executeSql(
+          'SELECT UserId FROM Users where Email= ?;',
+          [user.Email],
+          (_, results) => {
+            if (results.rows.length > 0) {
+              resolve(results.rows.item(0).UserId);
+            } else {
+              reject(new Error('Invalid email or password'));
+            }
+          },
+          (_, error) => reject(error),
+        );
+      });
+    });
+  };
+
+  const modal = () => {
+    return (
+      <Modal
+        animationType="slide"
+        statusBarTranslucent={true}
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+        }}>
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              marginTop: 0,
+              backgroundColor: 'rgba(0,0,0,0.1)',
+            }}>
+            <View
+              style={{
+                width: '100%',
+                height: '20%',
+                borderTopLeftRadius: 40,
+                borderTopRightRadius: 40,
+                backgroundColor: '#008080',
+                padding: 17,
+                alignItems: 'center',
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 29,
+                  fontFamily: 'SulphurPoint-Bold',
+                  marginBottom: 10,
+                }}>
+                Error
+              </Text>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 20,
+                  fontFamily: 'SulphurPoint-Bold',
+                  marginBottom: 8,
+                }}>
+                Invalid Address
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  justifyContent: 'space-evenly',
+                }}>
+                <TouchableHighlight
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: 12,
+                    marginTop: 10,
+                    padding: 10,
+                    width: width / 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                  }}>
+                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16}}>
+                    Cancel
+                  </Text>
+                </TouchableHighlight>
+                <TouchableHighlight
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: 12,
+                    marginTop: 10,
+                    padding: 10,
+                    width: width / 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                  }}>
+                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16}}>
+                    Ok
+                  </Text>
+                </TouchableHighlight>
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    );
+  };
+
+  const getusername = () => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT Username FROM Users where Email = ?;',
+        [user.Email],
+        (_, results) => {
+          if (results.rows.length > 0) {
+            setname(results.rows.item(0).Username);
+          }
+        },
+        (_, error) => error,
+      );
+    });
+  };
+  useEffect(() => {
+    console.log(item);
+    getusername();
+  }, []);
   return (
     <View style={{flex: 1}}>
-      <View style={{justifyContent:'center',alignItems:'center',marginTop:height/16}}>
-      <Text
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: height / 23,
+        }}>
+        <Text
           style={{
             color: 'black',
             fontSize: 22,
@@ -54,7 +227,6 @@ function ConfirmScreen({navigation}) {
         <View style={{alignItems: 'center'}}>
           <View
             style={{
-              //button one
               borderRadius: 20,
               backgroundColor: 'grey',
               alignItems: 'center',
@@ -76,14 +248,21 @@ function ConfirmScreen({navigation}) {
                 <Icon name="check" size={22} color={'white'} />
               </View>
             ) : (
-              <Text style={{color: 'white', fontSize: 18,fontFamily: 'SulphurPoint-Bold'}}>1</Text>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 18,
+                  fontFamily: 'SulphurPoint-Bold',
+                }}>
+                1
+              </Text>
             )}
           </View>
           <Text
             style={[
               {lineHeight: height / 19},
               {color: pageno >= 1 ? '#0F8BA1' : 'grey'},
-              {fontFamily: 'SulphurPoint-Bold'}
+              {fontFamily: 'SulphurPoint-Bold'},
             ]}>
             Address
           </Text>
@@ -115,14 +294,24 @@ function ConfirmScreen({navigation}) {
               </View>
             ) : (
               <View>
-                <Text style={{color: 'white', fontSize: 18,fontFamily: 'SulphurPoint-Bold'}}>2</Text>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: 18,
+                    fontFamily: 'SulphurPoint-Bold',
+                  }}>
+                  2
+                </Text>
               </View>
             )}
           </View>
           <Text
             style={[
               {lineHeight: height / 19},
-              {color: pageno >= 2 ? '#0F8BA1' : 'grey',fontFamily: 'SulphurPoint-Bold',},
+              {
+                color: pageno >= 2 ? '#0F8BA1' : 'grey',
+                fontFamily: 'SulphurPoint-Bold',
+              },
             ]}>
             Delivery
           </Text>
@@ -153,13 +342,23 @@ function ConfirmScreen({navigation}) {
                 <Icon name="check" size={22} color={'white'} />
               </View>
             ) : (
-              <Text style={{color: 'white', fontSize: 18,fontFamily: 'SulphurPoint-Bold'}}>3</Text>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 18,
+                  fontFamily: 'SulphurPoint-Bold',
+                }}>
+                3
+              </Text>
             )}
           </View>
           <Text
             style={[
               {lineHeight: height / 19},
-              {color: pageno >= 3 ? '#0F8BA1' : 'grey',fontFamily: 'SulphurPoint-Bold'},
+              {
+                color: pageno >= 3 ? '#0F8BA1' : 'grey',
+                fontFamily: 'SulphurPoint-Bold',
+              },
             ]}>
             Payment
           </Text>
@@ -190,14 +389,24 @@ function ConfirmScreen({navigation}) {
                 <Icon name="check" size={22} color={'white'} />
               </View>
             ) : (
-              <Text style={{color: 'white', fontSize: 18,fontFamily: 'SulphurPoint-Bold'}}>4</Text>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 18,
+                  fontFamily: 'SulphurPoint-Bold',
+                }}>
+                4
+              </Text>
             )}
           </View>
 
           <Text
             style={[
               {lineHeight: height / 19},
-              {color: pageno >= 4 ? '#0F8BA1' : 'grey',fontFamily: 'SulphurPoint-Bold'},
+              {
+                color: pageno >= 4 ? '#0F8BA1' : 'grey',
+                fontFamily: 'SulphurPoint-Bold',
+              },
             ]}>
             Place Order
           </Text>
@@ -217,8 +426,14 @@ function ConfirmScreen({navigation}) {
                 marginTop: height / 65,
                 marginLeft: width / 19,
               }}>
-              <Text style={{color: 'black', fontSize: 18, fontWeight: '700',fontFamily: 'SulphurPoint-Bold'}}>
-                Select Delivery Address
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: 18,
+                  fontWeight: '700',
+                  fontFamily: 'SulphurPoint-Bold',
+                }}>
+                Set Delivery Address
               </Text>
             </View>
             <View
@@ -264,23 +479,23 @@ function ConfirmScreen({navigation}) {
                       fontWeight: '700',
                       fontSize: 17,
                       marginRight: 8,
-                      fontFamily: 'SulphurPoint-Bold'
+                      fontFamily: 'SulphurPoint-Bold',
                     }}>
-                    Sharjeel
+                    {name}
                   </Text>
                   <Icon name="location-dot" size={20} color={'red'} />
                 </View>
-                <Text
-                  style={{fontSize: 17,fontFamily: 'SulphurPoint-Bold'}}
+                <TextInput
+                  style={{
+                    fontSize: 17,
+                    fontFamily: 'SulphurPoint-Bold',
+                    borderBottomWidth: 0.34,
+                    width: width / 1.5,
+                  }}
                   numberOfLines={1}
-                  ellipsizeMode="tail">
-                  {'Abadi#03,House#191A,Tench Bhatta,Rawalpindi'.length > 43
-                    ? 'Abadi#03,House#191A,Tench Bhatta,Rawalpindi'.substring(
-                        0,
-                        43 - 3,
-                      ) + '...'
-                    : 'Abadi#03,House#191A,Tench Bhatta,Rawalpindi'}
-                </Text>
+                  onChangeText={val => {
+                    setaddress(val);
+                  }}></TextInput>
               </View>
             </View>
             <Pressable
@@ -296,12 +511,26 @@ function ConfirmScreen({navigation}) {
               ]}
               disabled={activeButton1}
               onPressIn={() => {
-                setIsPressed1(true);
-                setpageno(1);
-                setContent(1);
+                if (address != null && address.length > 10) {
+                  setIsPressed1(true);
+                  setpageno(1);
+                  setContent(1);
+                } else {
+                  //  Alert.alert('Address is too short')
+                  //   ToastAndroid.show('Address is too short',ToastAndroid.SHORT)
+                  setModalVisible(true);
+                }
               }}>
-              <Text style={{fontSize: 17, color: 'white',fontFamily: 'SulphurPoint-Bold'}}>Continue</Text>
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: 'white',
+                  fontFamily: 'SulphurPoint-Bold',
+                }}>
+                Continue
+              </Text>
             </Pressable>
+            {modal()}
           </View>
         ) : content == 1 ? (
           <View style={{flex: 1}}>
@@ -310,7 +539,13 @@ function ConfirmScreen({navigation}) {
                 marginTop: height / 65,
                 marginLeft: width / 19,
               }}>
-              <Text style={{color: 'black', fontSize: 18, fontWeight: '700',fontFamily: 'SulphurPoint-Bold'}}>
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: 18,
+                  fontWeight: '700',
+                  fontFamily: 'SulphurPoint-Bold',
+                }}>
                 Choose Your Delivery Options
               </Text>
             </View>
@@ -328,6 +563,7 @@ function ConfirmScreen({navigation}) {
                 borderRadius: 7,
                 flexDirection: 'row',
                 backgroundColor: 'white',
+                paddingLeft: width / 36,
               }}>
               <View>
                 {a == 1 ? (
@@ -341,17 +577,25 @@ function ConfirmScreen({navigation}) {
                     <Icon name="circle" size={22} color={'grey'} />
                   </Pressable>
                 ) : (
-                  <Pressable>
+                  <Pressable
+                    onPress={() => {
+                      settiming('Tommorrow10pm');
+                    }}>
                     <Icon name="circle-dot" size={22} color={'grey'} />
                   </Pressable>
                 )}
               </View>
               <View>
-                <Text>
-                  <Text style={{color: 'green', fontSize: 17,fontFamily: 'SulphurPoint-Bold'}}>
+                <Text style={{paddingLeft: width / 36}}>
+                  <Text
+                    style={{
+                      color: 'green',
+                      fontSize: 17,
+                      fontFamily: 'SulphurPoint-Bold',
+                    }}>
                     Tomorrow By 10pm -
                   </Text>
-                  <Text style={{fontSize: 17,fontFamily: 'SulphurPoint-Bold'}}>
+                  <Text style={{fontSize: 17, fontFamily: 'SulphurPoint-Bold'}}>
                     FREE Delivery with your Prime membership
                   </Text>
                 </Text>
@@ -374,7 +618,14 @@ function ConfirmScreen({navigation}) {
                 setpageno(2);
                 setContent(2);
               }}>
-              <Text style={{fontSize: 17, color: 'white',fontFamily: 'SulphurPoint-Bold'}}>Continue</Text>
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: 'white',
+                  fontFamily: 'SulphurPoint-Bold',
+                }}>
+                Continue
+              </Text>
             </Pressable>
           </View>
         ) : content == 2 ? (
@@ -384,7 +635,13 @@ function ConfirmScreen({navigation}) {
                 marginTop: height / 65,
                 marginLeft: width / 19,
               }}>
-              <Text style={{color: 'black', fontSize: 18, fontWeight: '700',fontFamily: 'SulphurPoint-Bold'}}>
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: 18,
+                  fontWeight: '700',
+                  fontFamily: 'SulphurPoint-Bold',
+                }}>
                 Select Your Payment Method
               </Text>
             </View>
@@ -417,6 +674,9 @@ function ConfirmScreen({navigation}) {
                   </Pressable>
                 ) : (
                   <Pressable
+                    onPress={() => {
+                      setpaymentMethod('Cash');
+                    }}
                     style={{marginLeft: width / 20, marginRight: width / 20}}>
                     <Icon name="circle-dot" size={22} color={'grey'} />
                   </Pressable>
@@ -424,8 +684,17 @@ function ConfirmScreen({navigation}) {
               </View>
               <View>
                 <Text>
-                  <Text style={{color: 'green', fontSize: 17,fontFamily: 'SulphurPoint-Bold'}}>Cash </Text>
-                  <Text style={{fontSize: 17,fontFamily: 'SulphurPoint-Bold'}}>On Payment</Text>
+                  <Text
+                    style={{
+                      color: 'green',
+                      fontSize: 17,
+                      fontFamily: 'SulphurPoint-Bold',
+                    }}>
+                    Cash{' '}
+                  </Text>
+                  <Text style={{fontSize: 17, fontFamily: 'SulphurPoint-Bold'}}>
+                    On Payment
+                  </Text>
                 </Text>
               </View>
             </View>
@@ -458,6 +727,9 @@ function ConfirmScreen({navigation}) {
                   </Pressable>
                 ) : (
                   <Pressable
+                    onPress={() => {
+                      setpaymentMethod('Online');
+                    }}
                     style={{marginLeft: width / 20, marginRight: width / 20}}>
                     <Icon name="circle-dot" size={22} color={'grey'} />
                   </Pressable>
@@ -465,10 +737,17 @@ function ConfirmScreen({navigation}) {
               </View>
               <View>
                 <Text>
-                  <Text style={{color: 'green', fontSize: 17,fontFamily: 'SulphurPoint-Bold'}}>
+                  <Text
+                    style={{
+                      color: 'green',
+                      fontSize: 17,
+                      fontFamily: 'SulphurPoint-Bold',
+                    }}>
                     JazzCash /{' '}
                   </Text>
-                  <Text style={{fontSize: 17,fontFamily: 'SulphurPoint-Bold'}}>Online Payment</Text>
+                  <Text style={{fontSize: 17, fontFamily: 'SulphurPoint-Bold'}}>
+                    Online Payment
+                  </Text>
                 </Text>
               </View>
             </View>
@@ -490,7 +769,14 @@ function ConfirmScreen({navigation}) {
                 setpageno(3);
                 setContent(3);
               }}>
-              <Text style={{fontSize: 17, color: 'white',fontFamily: 'SulphurPoint-Bold'}}>Continue</Text>
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: 'white',
+                  fontFamily: 'SulphurPoint-Bold',
+                }}>
+                Continue
+              </Text>
             </Pressable>
           </View>
         ) : content == 3 ? (
@@ -500,7 +786,13 @@ function ConfirmScreen({navigation}) {
                 marginTop: height / 65,
                 marginLeft: width / 19,
               }}>
-              <Text style={{color: 'black', fontSize: 18, fontWeight: '700',fontFamily: 'SulphurPoint-Bold'}}>
+              <Text
+                style={{
+                  color: 'black',
+                  fontSize: 18,
+                  fontWeight: '700',
+                  fontFamily: 'SulphurPoint-Bold',
+                }}>
                 Order Now
               </Text>
             </View>
@@ -523,10 +815,22 @@ function ConfirmScreen({navigation}) {
                 backgroundColor: 'white',
               }}>
               <View>
-                <Text style={{color: 'black', fontSize: 17, fontWeight: '700',fontFamily: 'SulphurPoint-Bold'}}>
+                <Text
+                  style={{
+                    color: 'black',
+                    fontSize: 17,
+                    fontWeight: '700',
+                    fontFamily: 'SulphurPoint-Bold',
+                  }}>
                   Save Money With Us
                 </Text>
-                <Text style={{color: 'grey', fontSize: 15, fontWeight: '500',fontFamily: 'SulphurPoint-Bold'}}>
+                <Text
+                  style={{
+                    color: 'grey',
+                    fontSize: 15,
+                    fontWeight: '500',
+                    fontFamily: 'SulphurPoint-Bold',
+                  }}>
                   Delivery in minutes
                 </Text>
               </View>
@@ -555,8 +859,13 @@ function ConfirmScreen({navigation}) {
               }}>
               <View>
                 <Text
-                  style={{color: 'black', fontSize: 16.5, fontWeight: '700',fontFamily: 'SulphurPoint-Bold'}}>
-                  Shipping to Sharjeel
+                  style={{
+                    color: 'black',
+                    fontSize: 16.5,
+                    fontWeight: '700',
+                    fontFamily: 'SulphurPoint-Bold',
+                  }}>
+                  Shipping to {name}
                 </Text>
                 <View
                   style={{
@@ -567,12 +876,22 @@ function ConfirmScreen({navigation}) {
                     paddingTop: width / 40,
                   }}>
                   <Text
-                    style={{color: 'grey', fontSize: 14.5, fontWeight: '600',fontFamily: 'SulphurPoint-Bold'}}>
+                    style={{
+                      color: 'grey',
+                      fontSize: 14.5,
+                      fontWeight: '600',
+                      fontFamily: 'SulphurPoint-Bold',
+                    }}>
                     Quantity
                   </Text>
                   <Text
-                    style={{color: 'grey', fontSize: 16, fontWeight: '600',fontFamily: 'SulphurPoint-Bold'}}>
-                    Rs.568
+                    style={{
+                      color: 'grey',
+                      fontSize: 16,
+                      fontWeight: '600',
+                      fontFamily: 'SulphurPoint-Bold',
+                    }}>
+                    {quantity}
                   </Text>
                 </View>
                 <View
@@ -584,12 +903,22 @@ function ConfirmScreen({navigation}) {
                     paddingTop: width / 40,
                   }}>
                   <Text
-                    style={{color: 'grey', fontSize: 14.5, fontWeight: '600',fontFamily: 'SulphurPoint-Bold'}}>
+                    style={{
+                      color: 'grey',
+                      fontSize: 14.5,
+                      fontWeight: '600',
+                      fontFamily: 'SulphurPoint-Bold',
+                    }}>
                     Delivery
                   </Text>
                   <Text
-                    style={{color: 'grey', fontSize: 16, fontWeight: '600',fontFamily: 'SulphurPoint-Bold'}}>
-                    Rs.0
+                    style={{
+                      color: 'grey',
+                      fontSize: 16,
+                      fontWeight: '600',
+                      fontFamily: 'SulphurPoint-Bold',
+                    }}>
+                    $13
                   </Text>
                 </View>
                 <View
@@ -601,12 +930,22 @@ function ConfirmScreen({navigation}) {
                     paddingTop: width / 40,
                   }}>
                   <Text
-                    style={{color: 'black', fontSize: 18, fontWeight: '700',fontFamily: 'SulphurPoint-Bold'}}>
+                    style={{
+                      color: 'black',
+                      fontSize: 18,
+                      fontWeight: '700',
+                      fontFamily: 'SulphurPoint-Bold',
+                    }}>
                     Order Total
                   </Text>
                   <Text
-                    style={{color: 'black', fontSize: 18, fontWeight: '700',fontFamily: 'SulphurPoint-Bold'}}>
-                    Rs.568
+                    style={{
+                      color: 'black',
+                      fontSize: 18,
+                      fontWeight: '700',
+                      fontFamily: 'SulphurPoint-Bold',
+                    }}>
+                    ${price}
                   </Text>
                 </View>
               </View>
@@ -633,23 +972,43 @@ function ConfirmScreen({navigation}) {
                 {methodPay == 'cash' ? (
                   <View>
                     <Text
-                      style={{color: 'grey', fontSize: 16, fontWeight: '600',fontFamily: 'SulphurPoint-Bold'}}>
+                      style={{
+                        color: 'grey',
+                        fontSize: 16,
+                        fontWeight: '600',
+                        fontFamily: 'SulphurPoint-Bold',
+                      }}>
                       Pay With
                     </Text>
                     <Text
-                      style={{color: 'black', fontSize: 17, fontWeight: '700',fontFamily: 'SulphurPoint-Bold'}}>
+                      style={{
+                        color: 'black',
+                        fontSize: 17,
+                        fontWeight: '700',
+                        fontFamily: 'SulphurPoint-Bold',
+                      }}>
                       Pay On Delivery (Cash)
                     </Text>
                   </View>
                 ) : (
                   <View>
                     <Text
-                      style={{color: 'grey', fontSize: 16, fontWeight: '600',fontFamily: 'SulphurPoint-Bold'}}>
+                      style={{
+                        color: 'grey',
+                        fontSize: 16,
+                        fontWeight: '600',
+                        fontFamily: 'SulphurPoint-Bold',
+                      }}>
                       Payed With
                     </Text>
                     <Text
-                      style={{color: 'black', fontSize: 17, fontWeight: '700',fontFamily: 'SulphurPoint-Bold'}}>
-                      Online
+                      style={{
+                        color: 'black',
+                        fontSize: 17,
+                        fontWeight: '700',
+                        fontFamily: 'SulphurPoint-Bold',
+                      }}>
+                      {methodPay}
                     </Text>
                   </View>
                 )}
@@ -669,10 +1028,19 @@ function ConfirmScreen({navigation}) {
               // disabled={activeButton3}
               onPressIn={() => {
                 setIsPressed3(true);
+                handleTransaction();
+                deleteCart(user.Email,item.proid)
 
                 navigation.replace('animation');
               }}>
-              <Text style={{fontSize: 17, color: 'white',fontFamily: 'SulphurPoint-Bold'}}>Continue</Text>
+              <Text
+                style={{
+                  fontSize: 17,
+                  color: 'white',
+                  fontFamily: 'SulphurPoint-Bold',
+                }}>
+                Continue
+              </Text>
             </Pressable>
           </View>
         ) : (

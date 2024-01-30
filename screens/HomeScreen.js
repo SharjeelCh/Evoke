@@ -8,9 +8,11 @@ import {
   FlatList,
   ScrollView,
   Pressable,
+  ImageBackground,
 } from 'react-native';
 import {UserContext} from './UserProvider';
 import React, {useEffect, useState, useContext, useRef} from 'react';
+import {StyleSheet} from 'react-native';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import {LogBox} from 'react-native';
 import {insertintoproducts, showtables1, Tables} from '../SQL/tables';
@@ -18,9 +20,23 @@ import {useDispatch} from 'react-redux';
 import {seedetail} from '../ReduxManagement/DetailReducer';
 import {useNavigation} from '@react-navigation/native';
 import DataFetch from '../SQL/DataFetch';
-import db, {cartDB, createTable, executeProcedures, searchitemfromDB, searchitemfromDBusingProcedures} from '../SQL/userDB';
-import { products } from '../SQL/Array';
-import { selectShirt, selectall, selectcap, selecthoodie, selectpent, selectsuit, selecttrouser } from '../SQL/selectShirt';
+import db, {
+  cartDB,
+  createTable,
+  executeProcedures,
+  searchitemfromDB,
+  searchitemfromDBusingProcedures,
+} from '../SQL/userDB';
+import {products} from '../SQL/Array';
+import {
+  selectShirt,
+  selectall,
+  selectcap,
+  selecthoodie,
+  selectpent,
+  selectsuit,
+  selecttrouser,
+} from '../SQL/selectShirt';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -41,13 +57,28 @@ const HomeScreen = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const categories = ['shirt', 'hat','trouser','hoodie','pant','suit'];
-
+  const categories = ['shirt', 'hat', 'trouser', 'hoodie', 'pant', 'suit'];
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     createTable();
     db.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM userTransaction;',
+        [],
+        (_, results) => {
+          const item=results.rows.raw();
+          console.log("transaction: ",item)
+        
+        },
+        (_, error) => {
+          console.log('Error while selecting from userCart:', error);
+        },
+      );
+    });
+   /* db.transaction(tx => {
       categories.forEach((categoryName, index) => {
         tx.executeSql(
           'INSERT OR IGNORE INTO categories (catid, name) VALUES (?, ?);',
@@ -56,17 +87,24 @@ const HomeScreen = () => {
             console.log(`Category '${categoryName}' inserted successfully`);
           },
           (_, error) => {
-            console.error('Error inserting category:', error);
+            console.error('Error inserting category:', error.message);
           },
         );
       });
     });
-    db.transaction((tx) => {
-      Object.keys(products).forEach((key) => {
-        products[key].forEach((product) => {
+    db.transaction(tx => {
+      Object.keys(products).forEach(key => {
+        products[key].forEach(product => {
           tx.executeSql(
             'INSERT OR IGNORE INTO products (UniqueId, Proname, Proprice, rating, picture, catid) VALUES (?,?,?,?,?,?)',
-            [product.WebID, product.Name, product.Price.minPrice, product.Rating, product.URL, product.catid],
+            [
+              product.WebID,
+              product.Name,
+              product.Price.minPrice,
+              product.Rating,
+              product.URL,
+              product.catid,
+            ],
             (tx, results) => {
               console.log('Results', results.rowsAffected);
               if (results.rowsAffected > 0) {
@@ -75,89 +113,82 @@ const HomeScreen = () => {
                 console.log('Product already exists');
               }
             },
-            (error) => {
+            error => {
               console.log('Error inserting product:', error.message);
-            }
+            },
           );
         });
       });
     });
-     
+*/
     selectall()
-      .then(
-        (categories,
-        ) => {
-          setincoming(categories);
-        },
-      )
+      .then(categories => {
+        setincoming(categories);
+      })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-      selectShirt()
-      .then(
-        (categories,
-        ) => {
-          setshirt(categories);
-        },
-      )
+    selectShirt()
+      .then(categories => {
+        setshirt(categories);
+      })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-      selectcap()
-      .then(
-        (categories,
-        ) => {
-          setcap(categories);
-        },
-      )
+    selectcap()
+      .then(categories => {
+        setcap(categories);
+      })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-      selecttrouser()
-      .then(
-        (categories,
-        ) => {
-          settrouser(categories);
-        },
-      )
+    selecttrouser()
+      .then(categories => {
+        settrouser(categories);
+      })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-      selecthoodie()
-      .then(
-        (categories,
-        ) => {
-          sethoodie(categories);
-        },
-      )
+    selecthoodie()
+      .then(categories => {
+        sethoodie(categories);
+      })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-      selectpent()
-      .then(
-        (categories,
-        ) => {
-          setpent(categories);
-        },
-      )
+    selectpent()
+      .then(categories => {
+        setpent(categories);
+      })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-      selectsuit()
-      .then(
-        (categories,
-        ) => {
-          setsuit(categories);
-        },
-      )
+    selectsuit()
+      .then(categories => {
+        setsuit(categories);
+      })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
 
-       Tables()         // uncomment this to truncate cart and wishlist
+    Tables(); // uncomment this to truncate cart and wishlist
 
-   // showtables1();
+    // showtables1();
     console.log('search: ', searchResults);
+    const startCarousel = () => {
+      let index = currentIndex;
+      setTimeout(() => {
+        if (index === carouselData.length - 1) {
+          index = -1;
+        }
+        if (flatListRef.current) {
+          flatListRef.current.scrollToIndex({animated: true, index: index + 1});
+        }
+        setCurrentIndex(index + 1);
+        startCarousel();
+      }, 2000); // Change images every 2 seconds
+    };
+    startCarousel();
   }, []);
 
   const carouselData = [
@@ -174,7 +205,7 @@ const HomeScreen = () => {
       name: 'Shirts',
       image: require('../assets/categoryicons/clothes.png'),
     },
-    {id: '02', name: 'Cap', image: require('../assets/categoryicons/cap.png'),},
+    {id: '02', name: 'Cap', image: require('../assets/categoryicons/cap.png')},
     {
       id: '03',
       name: 'Trousers',
@@ -207,7 +238,13 @@ const HomeScreen = () => {
         handleProductDetail(item);
         navigation.navigate('product', item.proid);
       }}
-      style={{alignItems: 'center', justifyContent: 'center', margin: 10}}>
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: width / 21,
+        marginRight: width / 22,
+        marginTop: width / 27,
+      }}>
       <View style={{marginVertical: 10}}>
         <Image
           source={{uri: item.picture}}
@@ -222,7 +259,11 @@ const HomeScreen = () => {
           }}>
           <View style={{flex: 1}}>
             <Text
-              style={{color: 'black', fontFamily: 'SulphurPoint-Bold'}}
+              style={{
+                color: 'black',
+                fontFamily: 'SulphurPoint-Bold',
+                lineHeight: 20,
+              }}
               numberOfLines={2}
               ellipsizeMode="tail">
               {item.Proname}
@@ -257,7 +298,10 @@ const HomeScreen = () => {
     <TouchableOpacity onPress={() => setSelectedCategory(item)}>
       <View
         style={{
-          backgroundColor: selectedCategory && selectedCategory.id === item.id ? 'rgba(0, 128, 128,0.5)' : 'rgba(0, 128, 128,0.2)',
+          backgroundColor:
+            selectedCategory && selectedCategory.id === item.id
+              ? 'rgba(0, 128, 128,0.5)'
+              : 'rgba(0, 128, 128,0.2)',
           borderRadius: 100,
           padding: 15,
           margin: 10,
@@ -305,18 +349,16 @@ const HomeScreen = () => {
     }
   };
 
-  const RenderDotIndicator = () => {
-    return carouselData.map((dot, index) => {
+  const renderDotIndicator = () => {
+    return carouselData.map((_, i) => {
       return (
         <View
-          key={index}
-          style={{
-            backgroundColor: index === activeIndex ? '#008080' : '#bfbfbf',
-            height: index === activeIndex ? 12 : 8,
-            width: index === activeIndex ? 12 : 8,
-            borderRadius: 10,
-            marginHorizontal: 3,
-          }}></View>
+          key={i}
+          style={[
+            styles.dot,
+            {backgroundColor: i === currentIndex ? '#008080' : 'white'},
+          ]}
+        />
       );
     });
   };
@@ -346,8 +388,8 @@ const HomeScreen = () => {
       console.error(`Error occurred while searching: ${error}`);
     }
   };
-  const getProductsByCategory = (category) => {
-    switch(category) {
+  const getProductsByCategory = category => {
+    switch (category) {
       case 'Shirts':
         return shirt;
       case 'Cap':
@@ -356,8 +398,7 @@ const HomeScreen = () => {
         return trouser;
       case 'Hoodies':
         return hoodie;
-      case 'Pants': 
-
+      case 'Pants':
         return pent;
       case 'Suits':
         return suit;
@@ -371,7 +412,7 @@ const HomeScreen = () => {
     <View
       style={{
         flex: 1,
-        paddingTop: 60,
+        paddingTop: 20,
       }}>
       <View
         style={{
@@ -435,24 +476,74 @@ const HomeScreen = () => {
         <ScrollView>
           <View style={{marginHorizontal: 0}}>
             <FlatList
-              ref={ref => (flatListRef.current = ref)}
+              ref={flatListRef}
               data={carouselData}
-              renderItem={renderItem}
+              keyExtractor={item => item.id}
               horizontal
-              pagingEnabled={true}
-              onMomentumScrollEnd={scrollToNext}
-              onScroll={handlePageChange}
               showsHorizontalScrollIndicator={false}
+              pagingEnabled
+              onScrollToIndexFailed={info => {
+                const wait = new Promise(resolve => setTimeout(resolve, 500));
+                wait.then(() => {
+                  flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
+                });
+              }}
+
+              onScroll={({nativeEvent}) => {
+                const slide = Math.ceil(
+                  nativeEvent.contentOffset.x /
+                    nativeEvent.layoutMeasurement.width,
+                );
+                if (slide !== currentIndex) {
+                  setCurrentIndex(slide);
+                }
+              }}
+              scrollEventThrottle={32} // to ensure scroll events are fired regularly
+              renderItem={({item}) => (
+                <View
+                  style={{
+                    width,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <View style={{borderRadius: 20}}>
+                    <ImageBackground
+                      source={item.image}
+                      imageStyle={{borderRadius: 20}}
+                      style={{
+                        width: width / 1.3,
+                        height: width / 2,
+                        borderRadius: 20,
+                        marginTop: 13,
+                      }}
+                      resizeMode="cover">
+                      <View
+                        style={{
+                          backgroundColor: '#008080',
+                          width: 47,
+                          height: 29,
+                          alignItems: 'center',
+                          borderTopLeftRadius: 20,
+                          borderBottomRightRadius:20,
+                          justifyContent: 'center',
+                        }}>
+                        <Text style={{fontFamily: 'SulphurPoint-Bold',color:'white'}}>
+                          Promo
+                        </Text>
+                      </View>
+                    </ImageBackground>
+                  </View>
+                </View>
+              )}
             />
+            <View style={styles.dotContainer}>{renderDotIndicator()}</View>
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginTop: 10,
-              }}>
-              <RenderDotIndicator />
-            </View>
+              }}></View>
           </View>
           <View
             style={{
@@ -470,10 +561,13 @@ const HomeScreen = () => {
               }}>
               Catergory
             </Text>
-            <TouchableOpacity onPress={()=>{setSelectedCategory(null)}}>
-            <Text style={{color: '#008080', fontFamily: 'SulphurPoint-Bold'}}>
-              See All
-            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedCategory(null);
+              }}>
+              <Text style={{color: '#008080', fontFamily: 'SulphurPoint-Bold'}}>
+                See All
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={{marginHorizontal: 20}}>
@@ -495,7 +589,11 @@ const HomeScreen = () => {
             </Text>
           </View>
           <FlatList
-            data={selectedCategory ? getProductsByCategory(selectedCategory.name) : incoming}
+            data={
+              selectedCategory
+                ? getProductsByCategory(selectedCategory.name)
+                : incoming
+            }
             renderItem={renderProd}
             numColumns={2}
             style={{marginHorizontal: 10}}
@@ -543,7 +641,6 @@ const HomeScreen = () => {
                     justifyContent: 'space-between',
                     marginRight: width / 20,
                     marginLeft: width / 20,
-
                   }}>
                   <View
                     style={{
@@ -627,5 +724,19 @@ const HomeScreen = () => {
     </View>
   );
 };
+const styles = StyleSheet.create({
+  dot: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    marginHorizontal: 2,
+  },
+  dotContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: -25, // Adjust this value as needed
+  },
+});
 
 export default HomeScreen;

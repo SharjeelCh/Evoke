@@ -54,6 +54,7 @@ const ProfileScreen = ({navigation}) => {
         marginHorizontal: 25,
         borderBottomWidth: 0.2,
         borderColor: 'grey',
+        marginTop:-3,
         padding: 15,
         alignItems: 'center',
       }}>
@@ -73,7 +74,7 @@ const ProfileScreen = ({navigation}) => {
     </TouchableOpacity>
   );
   return (
-    <View style={{flex: 1, backgroundColor: 'white', paddingTop: 60}}>
+    <View style={{flex: 1, backgroundColor: 'white', paddingTop: 15}}>
       <View
         style={{
           flexDirection: 'row',
@@ -141,7 +142,6 @@ const ProfileScreen = ({navigation}) => {
         {name}
       </Text>
       {renderMenuItem('person-outline', 'My Profile')}
-      {renderMenuItem('card-outline', 'Payment Options')}
       {renderMenuItem('reader-outline', 'My Orders')}
       {renderMenuItem('settings-outline', 'Settings')}
       {renderMenuItem('alert-circle-outline', 'Help Center')}

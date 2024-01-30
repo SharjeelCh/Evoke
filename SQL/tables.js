@@ -110,11 +110,11 @@ export const insertintoproducts =(protype, prodata)=>{
 }
 db.transaction(tx => {
   tx.executeSql(
-    'SELECT * FROM userWishlist;',
+    'SELECT * FROM userTransaction;',
     [],
     (_, results) => {
       const item=results.rows.raw();
-      console.log("wishlist: ",item)
+      console.log("transaction: ",item)
     
     },
     (_, error) => {
@@ -131,7 +131,7 @@ const deletetable=()=>{
 // Truncate the products table
 db.transaction(tx => {
   tx.executeSql(
-    'Delete from products;',
+    'Drop  userTransaction;',
     [],
     (_, results) => {
       console.log('Products table truncated successfully.');

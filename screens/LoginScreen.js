@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity,TouchableWithoutFeedback,Modal, Dimensions} from 'react-native';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import {Jiro} from 'react-native-textinput-effects';
@@ -11,7 +11,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 const LoginScreen = ({navigation}) => {
   const { user, setUser } = useContext(UserContext);
   const [email, setEmail] = useState('');
+  const [modalVisible, setModalVisible] = useState(false); 
   const [password, setPassword] = useState('');
+  const width = Dimensions.get('window').width;
 
   const handleLogin = async () => {
     try {
@@ -21,10 +23,119 @@ const LoginScreen = ({navigation}) => {
       await AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
       await AsyncStorage.setItem('userData', JSON.stringify(user));
       navigation.navigate('bottomtab')
+      if(user==null){
+        setModalVisible(true);
+      }
     } catch (error) {
       console.log('Error logging in:', error);
+      setModalVisible(true);
+
     }
   };
+
+  const modal = () => {
+    return (
+      <Modal
+        animationType="slide"
+        statusBarTranslucent={true}
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+        }}>
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              marginTop: 0,
+              backgroundColor: 'rgba(0,0,0,0.2)',
+            }}>
+            <View
+              style={{
+                width: '100%',
+                height: '20%',
+                borderTopLeftRadius: 40,
+                borderTopRightRadius: 40,
+                backgroundColor: '#008080',
+                padding: 17,
+                alignItems: 'center',
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 29,
+                  fontFamily: 'SulphurPoint-Bold',
+                  marginBottom: 10,
+                }}>
+                Error
+              </Text>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 19,
+                  fontFamily: 'SulphurPoint-Bold',
+                  marginBottom: 8,
+                }}>
+                  Invalid Email or Password
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  justifyContent: 'space-evenly',
+                }}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: 12,
+                    marginTop: 10,
+                    padding: 10,
+                    width: width / 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                  }}>
+                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16}}>
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: 12,
+                    marginTop: 10,
+                    padding: 10,
+                    width: width / 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                  }}>
+                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16}}>
+                    Ok
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    );
+  };
+
   useEffect(()=>{
     console.log('Logged in userContext:', user);
   },[])
@@ -230,6 +341,7 @@ const LoginScreen = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
+      {modal()}
     </View>
   );
 };

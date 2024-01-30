@@ -57,7 +57,7 @@ export const createTable = () => {
         console.log('Error while creating userWishlist table:', error);
       },
     );
-    
+
     tx.executeSql(
       'CREATE TABLE IF NOT EXISTS userTransaction (transId INTEGER PRIMARY KEY AUTOINCREMENT, UserID INTEGER, proid INTEGER, Proname varchar(100), Proprice REAL, proSize varchar(10), rating REAL,proQuantity INTEGER, picture varchar(500), catid INTEGER, MethodPay varchar(30) , address,FOREIGN KEY (UserID) REFERENCES Users(UserId))',
       [],
@@ -197,7 +197,14 @@ export const wishDB = (product, id) => {
     );
   });
 };
-export const insertintouserTransaction = (id,proItem,quantity,methodpay,address,price) => {
+export const insertintouserTransaction = (
+  id,
+  proItem,
+  quantity,
+  methodpay,
+  address,
+  price,
+) => {
   db.transaction(tx => {
     tx.executeSql(
       'INSERT INTO userTransaction ( UserID, proid, Proname ,Proprice, proSize, rating, proQuantity ,picture, catid, MethodPay, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)',
@@ -212,7 +219,7 @@ export const insertintouserTransaction = (id,proItem,quantity,methodpay,address,
         proItem.picture,
         proItem.catid,
         methodpay,
-        address
+        address,
       ],
       (_, results) => {
         console.log('Data inserted successfully into usertransaction');
@@ -223,7 +230,6 @@ export const insertintouserTransaction = (id,proItem,quantity,methodpay,address,
     );
   });
 };
-
 
 export const validateCart = () => {
   return new Promise((resolve, reject) => {
@@ -370,36 +376,34 @@ export const executeProcedures = searchQuery => {
   });
 };
 
-export const deleteWishlist = (id,proid) => {
+export const deleteWishlist = (id, proid) => {
   db.transaction(tx => {
     tx.executeSql(
       'DELETE FROM userWishlist WHERE UserId IN (SELECT UserId FROM Users WHERE Email = ?) AND proid = ?',
-      [id,proid],
+      [id, proid],
       (tx, results) => {
         console.log('Wishlist deleted successfully');
       },
       error => {
-        console.log('Error deleting wishlist',error);
+        console.log('Error deleting wishlist', error);
       },
     );
   });
 };
 
-export const deleteCart = (id,proid) => {
+export const deleteCart = (id, proid) => {
   db.transaction(tx => {
     tx.executeSql(
       'DELETE FROM userCart WHERE UserId IN (SELECT UserId FROM Users WHERE Email = ?) AND proid = ?',
-      [id,proid],
+      [id, proid],
       (tx, results) => {
         console.log('cart deleted successfully after transaction');
       },
       error => {
-        console.log('Error deleting wishlist',error);
+        console.log('Error deleting wishlist', error);
       },
     );
   });
 };
-
-
 
 export default db;

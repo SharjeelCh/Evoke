@@ -20,29 +20,29 @@ const ProfileScreen = ({navigation}) => {
             setname(results.rows.item(0).Username);
           }
         },
-        (_, error) => (error),
+        (_, error) => error,
       );
     });
   };
 
-  const { setUser } = useContext(UserContext);
+  const {setUser} = useContext(UserContext);
 
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('isLoggedIn');
       await AsyncStorage.removeItem('userData');
-      
-      setUser({ isLoggedIn: false });
-      
-      navigation.navigate('welcome'); 
+
+      setUser({isLoggedIn: false});
+
+      navigation.navigate('welcome');
     } catch (error) {
       console.error('Error during logout', error);
     }
-  }
+  };
 
   useEffect(() => {
     getusername();
-    console.log("user email: ",user.Email);
+    console.log('user email: ', user.Email);
   }, [user]);
 
   const renderMenuItem = (iconName, label, onPress) => (
@@ -54,7 +54,7 @@ const ProfileScreen = ({navigation}) => {
         marginHorizontal: 25,
         borderBottomWidth: 0.2,
         borderColor: 'grey',
-        marginTop:-3,
+        marginTop: -3,
         padding: 15,
         alignItems: 'center',
       }}>
@@ -146,7 +146,7 @@ const ProfileScreen = ({navigation}) => {
       {renderMenuItem('settings-outline', 'Settings')}
       {renderMenuItem('alert-circle-outline', 'Help Center')}
       {renderMenuItem('lock-closed-outline', 'Privacy Policy')}
-      {renderMenuItem('log-out-outline', 'Sign Out' , handleLogout)}
+      {renderMenuItem('log-out-outline', 'Sign Out', handleLogout)}
     </View>
   );
 };

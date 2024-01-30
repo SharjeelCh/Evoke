@@ -34,12 +34,7 @@ const CartScreen = () => {
   const [price, setprice] = useState({Number: 1});
   const [items, setItems] = useState([]);
 
-
-  
-
-  // Function to toggle selected state of an item
   const toggleSelectedItem = itemId => {
-    // Deselect previously selected item
     Object.keys(selectedItems).forEach(key => {
       if (key !== itemId) {
         setSelectedItems(prevSelectedItems => ({
@@ -49,7 +44,6 @@ const CartScreen = () => {
       }
     });
 
-    // Toggle selected state of the current item
     setSelectedItems(prevSelectedItems => ({
       ...prevSelectedItems,
       [itemId]: !prevSelectedItems[itemId],
@@ -108,7 +102,7 @@ const CartScreen = () => {
         <View style={{marginLeft: 10}}>
           <Pressable
             onPress={() => {
-              toggleSelectedItem(item.proid); 
+              toggleSelectedItem(item.proid);
               setSelectedItemData(item);
             }}>
             <Text
@@ -380,12 +374,13 @@ const CartScreen = () => {
               marginTop: 15,
             }}
             onPress={() => {
-              const selectedQuantity = item.find(item => item.proid === selectedItem.proid)?.proQuantity ?? 0;
+              const selectedQuantity =
+                item.find(item => item.proid === selectedItem.proid)
+                  ?.proQuantity ?? 0;
               navigation.replace('order', {
                 item: selectedItem,
                 price: calculateTotalCost(),
                 quantity: selectedQuantity,
-                
               });
             }}>
             <Text
@@ -420,9 +415,8 @@ const styles = StyleSheet.create({
     padding: 3,
     width: 80,
     height: 80,
-    borderLeftWidth: 1,
+    borderWidth: 1,
     borderColor: '#008080',
-    borderLeftColor: '#008080',
   },
 });
 

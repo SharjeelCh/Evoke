@@ -15,7 +15,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {deleteWishlist, fetchWishlistItemsFromSQLite} from '../SQL/userDB';
 import LottieView from 'lottie-react-native';
 import {UserContext} from './UserProvider';
-import { seedetail } from '../ReduxManagement/DetailReducer';
+import {seedetail} from '../ReduxManagement/DetailReducer';
 
 const Wishlist = ({navigation}) => {
   const wishlistItems = useSelector(state => state.wish.items);
@@ -23,7 +23,7 @@ const Wishlist = ({navigation}) => {
 
   const [item, setitem] = useState([]);
   const [refresh, setRefresh] = useState(false);
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
   const [refreshing, setRefreshing] = useState(false);
@@ -130,7 +130,6 @@ const Wishlist = ({navigation}) => {
                 onLongPress={() => {
                   deleteWishlist(user.Email, item.proid);
                 }}
-               
                 style={{
                   marginHorizontal: 10,
                   // borderWidth: 0.2,
@@ -138,7 +137,7 @@ const Wishlist = ({navigation}) => {
                   // borderColor: '#008080',
                   marginTop: 7,
                   borderBottomColor: '#008080',
-                  borderBottomWidth:1,
+                  borderBottomWidth: 1,
                 }}>
                 <View
                   style={{marginVertical: 10, marginRight: 25, marginLeft: 13}}>

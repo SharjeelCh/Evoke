@@ -1,35 +1,145 @@
-import {View, Text, TouchableOpacity, ToastAndroid} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {View, Text, TouchableOpacity, ToastAndroid,Modal,TouchableHighlight,TouchableWithoutFeedback, Dimensions} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {Jiro} from 'react-native-textinput-effects';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import { createTable, createUser } from '../SQL/userDB';
+import {createTable, createUser} from '../SQL/userDB';
+
 
 const SignUpScreen = ({navigation}) => {
-
-  const [userName, setuserName]=useState('');
-  const [email, setEmail]=useState('');
-  const [password, setPassword]=useState('');
-  const [secure,setseccure]=useState(true)
+  const [userName, setuserName] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [secure, setseccure] = useState(true);
+  const [go, notgo] = useState(false);
+  const width=Dimensions.get('window').width;
+  const height=Dimensions.get('window').height;
   const togglePasswordVisibility = () => {
-    setseccure(!secure); 
+    setseccure(!secure);
+  };
+  const toogleAgree = () => {
+    notgo(!go);
   };
   const handleSignup = async () => {
     try {
-      const user=await createUser(userName, email, password)
+      const user = await createUser(userName, email, password);
       console.log('User created successfully', user);
 
       navigation.navigate('login');
     } catch (error) {
-      ToastAndroid.show('Please Enter correct data', ToastAndroid.BOTTOM  )
+     // ToastAndroid.show('Please Enter correct data', ToastAndroid.BOTTOM);
+     setModalVisible(true);
       console.log('Error signing up:', error);
     }
   };
 
-  useEffect(()=>{
-    createTable();
-  },[])
+  const modal = () => {
+    return (
+      <Modal
+        animationType="slide"
+        statusBarTranslucent={true}
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+        }}>
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              marginTop: 0,
+              backgroundColor: 'rgba(0,0,0,0.2)',
+            }}>
+            <View
+              style={{
+                width: '100%',
+                height: '20%',
+                borderTopLeftRadius: 40,
+                borderTopRightRadius: 40,
+                backgroundColor: '#008080',
+                padding: 17,
+                alignItems: 'center',
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 29,
+                  fontFamily: 'SulphurPoint-Bold',
+                  marginBottom: 10,
+                }}>
+                Error
+              </Text>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 19,
+                  fontFamily: 'SulphurPoint-Bold',
+                  marginBottom: 8,
+                }}>
+                Please Fill Out All The Fields
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  justifyContent: 'space-evenly',
+                }}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: 12,
+                    marginTop: 10,
+                    padding: 10,
+                    width: width / 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                  }}>
+                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16}}>
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: 12,
+                    marginTop: 10,
+                    padding: 10,
+                    width: width / 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                  }}>
+                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16}}>
+                    Ok
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    );
+  };
 
+  useEffect(() => {
+    createTable();
+  }, []);
 
   return (
     <View style={{height: '100%', paddingTop: 0, backgroundColor: 'white'}}>
@@ -126,7 +236,11 @@ const SignUpScreen = ({navigation}) => {
           />
           <View style={{position: 'relative', left: 320, bottom: 40}}>
             <TouchableOpacity onPress={togglePasswordVisibility}>
-              <Ionicon name="eye-off-outline" color={'white'} size={35} />
+              {secure ? (
+                <Ionicon name="eye-off-outline" color={'white'} size={35} />
+              ) : (
+                <Ionicon name="eye" color={'white'} size={35} />
+              )}
             </TouchableOpacity>
           </View>
         </View>
@@ -144,6 +258,7 @@ const SignUpScreen = ({navigation}) => {
             iconStyle={{borderColor: 'red', borderRadius: 5}}
             innerIconStyle={{borderWidth: 2, borderRadius: 5}}
             textStyle={{fontFamily: 'JosefinSans-Regular'}}
+            onPress={toogleAgree}
           />
           <Text
             style={{
@@ -174,6 +289,7 @@ const SignUpScreen = ({navigation}) => {
               borderRadius: 30,
               marginVertical: 30,
             }}
+            disabled={!go}
             onPress={() => {
               handleSignup();
             }}>
@@ -285,6 +401,7 @@ const SignUpScreen = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
+    {modal()}
     </View>
   );
 };

@@ -10,7 +10,10 @@ const SignUpScreen = ({navigation}) => {
   const [userName, setuserName]=useState('');
   const [email, setEmail]=useState('');
   const [password, setPassword]=useState('');
-
+  const [secure,setseccure]=useState(true)
+  const togglePasswordVisibility = () => {
+    setseccure(!secure); 
+  };
   const handleSignup = async () => {
     try {
       const user=await createUser(userName, email, password)
@@ -112,7 +115,7 @@ const SignUpScreen = ({navigation}) => {
             }}
             borderColor={'#008080'}
             inputPadding={16}
-            secureTextEntry={true}
+            secureTextEntry={secure}
             inputStyle={{
               color: 'white',
               fontFamily: 'SulphurPoint-Bold',
@@ -121,8 +124,8 @@ const SignUpScreen = ({navigation}) => {
             style={{marginTop: 0}}
             onChangeText={password => setPassword(password)}
           />
-          <View style={{position: 'relative', left: 257, bottom: 40}}>
-            <TouchableOpacity onPress={() => {}}>
+          <View style={{position: 'relative', left: 320, bottom: 40}}>
+            <TouchableOpacity onPress={togglePasswordVisibility}>
               <Ionicon name="eye-off-outline" color={'white'} size={35} />
             </TouchableOpacity>
           </View>

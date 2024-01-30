@@ -77,6 +77,20 @@ const showtables=()=>{
       },
     );
   });
+  db.transaction(tx => {
+    tx.executeSql(
+      'SELECT * FROM userTransaction;',
+      [],
+      (_, results) => {
+        const item=results.rows.raw();
+        console.log("transaction: ",item)
+      
+      },
+      (_, error) => {
+        console.log('Error while selecting from userCart:', error);
+      },
+    );
+  });
     
 }
 export const insertintoproducts =(protype, prodata)=>{
@@ -108,20 +122,7 @@ export const insertintoproducts =(protype, prodata)=>{
     })
   })
 }
-db.transaction(tx => {
-  tx.executeSql(
-    'SELECT * FROM userTransaction;',
-    [],
-    (_, results) => {
-      const item=results.rows.raw();
-      console.log("transaction: ",item)
-    
-    },
-    (_, error) => {
-      console.log('Error while selecting from userCart:', error);
-    },
-  );
-});
+
   
 
 

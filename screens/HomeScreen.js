@@ -159,7 +159,7 @@ const HomeScreen = () => {
 
     Tables(); // uncomment this to truncate cart and wishlist
 
-    // showtables1();
+     showtables1();
     console.log('search: ', searchResults);
     const startCarousel = () => {
       let index = currentIndex;
@@ -230,6 +230,8 @@ const HomeScreen = () => {
         marginLeft: width / 21,
         marginRight: width / 22,
         marginTop: width / 27,
+        borderBottomWidth:0.5,
+        borderColor:'#008080'
       }}>
       <View style={{marginVertical: 10}}>
         <Image
@@ -272,7 +274,7 @@ const HomeScreen = () => {
             color: 'black',
             fontFamily: 'SulphurPoint-Bold',
             fontSize: 16,
-            marginTop: -5,
+            marginTop: 0,
           }}>
           ${item.Proprice}
         </Text>

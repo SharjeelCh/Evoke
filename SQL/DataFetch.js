@@ -26,7 +26,7 @@ const DataFetch = () => {
     const options = {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': '201a32a6camsh0e01c8c23c55838p184e9fjsn00792122155e',
+       // 'X-RapidAPI-Key': '201a32a6camsh0e01c8c23c55838p184e9fjsn00792122155e',
         'X-RapidAPI-Host': 'kohls.p.rapidapi.com',
       },
     };

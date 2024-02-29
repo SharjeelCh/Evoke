@@ -25,7 +25,6 @@ const NavStack = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check AsyncStorage for the user's login state
     const checkLoginStatus = async () => {
       try {
         const storedLoginStatus = await AsyncStorage.getItem('isLoggedIn');
@@ -63,6 +62,8 @@ const NavStack = () => {
             <Stack.Screen name="product" component={ProductScreen} />
             <Stack.Screen name="order" component={ConfirmScreen} />
             <Stack.Screen name="animation" component={OrderAnimation} />
+            <Stack.Screen name="otp" component={OtpScreen} />
+
 
 
 

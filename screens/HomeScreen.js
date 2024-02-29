@@ -64,7 +64,7 @@ const HomeScreen = () => {
 
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     createTable(); 
-   /* db.transaction(tx => {
+    db.transaction(tx => {
       categories.forEach((categoryName, index) => {
         tx.executeSql(
           'INSERT OR IGNORE INTO categories (catid, name) VALUES (?, ?);',
@@ -100,13 +100,13 @@ const HomeScreen = () => {
               }
             },
             error => {
-              console.log('Error inserting product:', error.message);
+              console.log('Error inserting produt:', error.message);
             },
           );
         });
       });
     });
-*/
+
     selectall()
       .then(categories => {
         setincoming(categories);
@@ -157,7 +157,11 @@ const HomeScreen = () => {
         console.error('Error fetching data:', error);
       });
 
-    Tables(); // uncomment this to truncate cart and wishlist
+    
+
+
+
+   Tables(); // uncomment this to truncate cart and wishlist
 
      showtables1();
     console.log('search: ', searchResults);

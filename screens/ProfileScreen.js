@@ -4,11 +4,49 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 import SQLite from 'react-native-sqlite-storage';
 import {UserContext} from './UserProvider';
 import AsyncStorage from '@react-native-community/async-storage';
+import {executeProcedures2, getname} from '../SQL/userDB';
 
 const ProfileScreen = ({navigation}) => {
-  const [name, setname] = useState(null);
   const {user} = useContext(UserContext);
+  const [Name, setName] = useState('');
 
+  executeProcedures2(user.Email)
+    .then(name => {
+      setName(name);
+    })
+    .catch(error => {
+    });
+
+  const {setUser} = useContext(UserContext);
+  const handle_orders=()=>{
+    navigation.navigate('otp',{email:user.Email})
+  }
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('isLoggedIn');
+      await AsyncStorage.removeItem('userData');
+
+      setUser({isLoggedIn: false});
+
+      navigation.navigate('welcome');
+    } catch (error) {
+      console.error('Error during logout', error);
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+  const [name, setname] = useState(null);
   const db = SQLite.openDatabase({name: 'evokeDB.db', location: 'default'});
   const getusername = () => {
     db.transaction(tx => {
@@ -25,23 +63,9 @@ const ProfileScreen = ({navigation}) => {
     });
   };
 
-  const {setUser} = useContext(UserContext);
-
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('isLoggedIn');
-      await AsyncStorage.removeItem('userData');
-
-      setUser({isLoggedIn: false});
-
-      navigation.navigate('welcome');
-    } catch (error) {
-      console.error('Error during logout', error);
-    }
-  };
-
   useEffect(() => {
     getusername();
+    getname(user.Email)
     console.log('user email: ', user.Email);
   }, [user]);
 
@@ -142,7 +166,7 @@ const ProfileScreen = ({navigation}) => {
         {name}
       </Text>
       {renderMenuItem('person-outline', 'My Profile')}
-      {renderMenuItem('reader-outline', 'My Orders')}
+      {renderMenuItem('reader-outline', 'My Orders',handle_orders)}
       {renderMenuItem('settings-outline', 'Settings')}
       {renderMenuItem('alert-circle-outline', 'Help Center')}
       {renderMenuItem('lock-closed-outline', 'Privacy Policy')}

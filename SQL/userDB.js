@@ -59,7 +59,7 @@ export const createTable = () => {
     );
 
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS userTransaction (transId INTEGER PRIMARY KEY AUTOINCREMENT, UserID INTEGER, proid INTEGER, Proname varchar(100), Proprice REAL, proSize varchar(10), rating REAL,proQuantity INTEGER, picture varchar(500), catid INTEGER, MethodPay varchar(30) , address,FOREIGN KEY (UserID) REFERENCES Users(UserId))',
+      'CREATE TABLE IF NOT EXISTS userTransaction (transId INTEGER PRIMARY KEY AUTOINCREMENT, UserID INTEGER, proid INTEGER, Proname varchar(100), Proprice REAL, proSize varchar(10), rating REAL,proQuantity INTEGER, picture varchar(500), catid INTEGER, MethodPay varchar(30) , address varchar(40),FOREIGN KEY (UserID) REFERENCES Users(UserId))',
       [],
       (_, results) => {
         console.log('userTransaction table created successfully: ');
@@ -298,6 +298,28 @@ export const fetchWishlistItemsFromSQLite = id => {
     });
   });
 };
+export const fetchtransactionFromSQLite = id => {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM userTransaction inner join Users on userTransaction.UserId = Users.UserId where Users.Email = ?',
+        [id],
+        (tx, results) => {
+          const len = results.rows.length;
+          const items = [];
+          for (let i = 0; i < len; i++) {
+            const row = results.rows.item(i);
+            items.push(row);
+          }
+          resolve(items);
+        },
+        error => {
+          reject(error);
+        },
+      );
+    });
+  });
+};
 export const searchitemfromDB = searchQuery => {
   return new Promise((resolve, reject) => {
     db.transaction(tx => {
@@ -375,6 +397,48 @@ export const executeProcedures = searchQuery => {
     });
   });
 };
+export const getname = (email) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        `CREATE PROCEDURE IF NOT EXISTS getusername(@email varchar(40))
+        BEGIN
+        SELECT USERNAME FROM Users WHERE Email = ?
+        END
+        `,
+        [email],
+        (_, results) => {
+
+        },
+        (_, error) => {
+         // console.error('Error validating proID :', error);
+        },
+      );
+    });
+  
+};
+export const executeProcedures2 = email => {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        `CALL getusername(?)'`,
+        [email],
+        (tx, results) => {
+          const len = results.rows.length;
+          const items = [];
+          for (let i = 0; i < len; i++) {
+            const row = results.rows.item(i);
+            items.push(row);
+          }
+          resolve(items);
+        },
+        error => {
+          reject(error);
+        },
+      );
+    });
+  });
+};
+
 
 export const deleteWishlist = (id, proid) => {
   db.transaction(tx => {

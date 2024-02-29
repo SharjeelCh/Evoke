@@ -8,6 +8,7 @@ import { useContext } from 'react';
 import { UserContext } from './UserProvider';
 import AsyncStorage from '@react-native-community/async-storage';
 
+
 const LoginScreen = ({navigation}) => {
   const { user, setUser } = useContext(UserContext);
   const [email, setEmail] = useState('');

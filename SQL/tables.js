@@ -4,7 +4,7 @@ const db = SQLite.openDatabase(
   {name: 'evokeDB.db', location: 'default'},
   () => {},
   error => {
-    console.log('Error while opening the database:', error);
+    
   },
 );
 
@@ -14,20 +14,20 @@ const createTables = () => {
       'CREATE TABLE IF NOT EXISTS categories (catid INTEGER PRIMARY KEY AUTOINCREMENT, name varchar(40)) ;',
       [],
       (tx, results) => {
-        console.log('categories created');
+        
       },
       (tx, error) => {
-        console.log('Error while creating table:', error);
+        
       },
     );
     tx.executeSql(
       'CREATE TABLE IF NOT EXISTS products (proid INTEGER PRIMARY KEY AUTOINCREMENT, UniqueId INTEGER UNIQUE, Proname varchar(100), Proprice REAL, rating REAL, picture varchar(500), catid INTEGER, FOREIGN KEY (catid) REFERENCES categories(catid))',
       [],
       (tx, results) => {
-        console.log('Products created');
+        
       },
       (tx, error) => {
-        console.log('Error while creating table:', error);
+        
       },
     );
   });
@@ -42,11 +42,11 @@ const showtables = () => {
         const {rows} = results;
         for (let i = 0; i < rows.length; i++) {
           const {catid, name} = rows.item(i);
-          console.log(`Category ID: ${catid}, Name: ${name}`);
+          
         }
       },
       (_, error) => {
-        console.log('Error while selecting from categories:', error);
+        
       },
     );
   });
@@ -59,13 +59,13 @@ const showtables = () => {
         for (let i = 0; i < rows.length; i++) {
           const {proid, UniqueId, Proname, Proprice, rating, picture, catid} =
             rows.item(i);
-          console.log(
+          
             `Product ID: ${proid}, Unique ID: ${UniqueId}, Name: ${Proname}, Price: ${Proprice}, Rating: ${rating}, Picture: ${picture}, Category ID: ${catid}`,
           );
         }
       },
       (_, error) => {
-        console.log('Error while selecting from products:', error);
+        
       },
     );
   });
@@ -75,10 +75,10 @@ const showtables = () => {
       [],
       (_, results) => {
         const item = results.rows.raw();
-        console.log('cart: ', item);
+        
       },
       (_, error) => {
-        console.log('Error while selecting from userCart:', error);
+        
       },
     );
   });
@@ -88,10 +88,10 @@ const showtables = () => {
       [],
       (_, results) => {
         const item = results.rows.raw();
-        console.log('transaction: ', item);
+        
       },
       (_, error) => {
-        console.log('Error while selecting from userCart:', error);
+        
       },
     );
   });
@@ -111,10 +111,10 @@ export const insertintoproducts = (protype, prodata) => {
           product.catid,
         ],
         (_, resultSet) => {
-          console.log(
+          
             `Product '${product.productTitle}' inserted successfully`,
             tx.executeSql('COMMIT;', [], () => {
-              console.log('Transaction committed successfully');
+              
             }),
           );
         },
@@ -135,10 +135,10 @@ const deletetable = () => {
       'Drop  userTransaction;',
       [],
       (_, results) => {
-        console.log('Products table truncated successfully.');
+        
       },
       (_, error) => {
-        console.log('Error while truncating products table:', error);
+        
       },
     );
   });

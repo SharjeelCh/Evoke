@@ -66,7 +66,7 @@ const ProfileScreen = ({navigation}) => {
   useEffect(() => {
     getusername();
     getname(user.Email)
-    console.log('user email: ', user.Email);
+    
   }, [user]);
 
   const renderMenuItem = (iconName, label, onPress) => (

@@ -28,7 +28,7 @@ const NavStack = () => {
     const checkLoginStatus = async () => {
       try {
         const storedLoginStatus = await AsyncStorage.getItem('isLoggedIn');
-        console.log('Stored Login Status:', storedLoginStatus);
+        
         const parsedLoginStatus = JSON.parse(storedLoginStatus);
       //  setUser({ isLoggedIn: true });
         const storedUserData = await AsyncStorage.getItem('userData');

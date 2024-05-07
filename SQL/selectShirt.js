@@ -23,7 +23,7 @@ export const selectall = async () => {
         },
         
         (_, error) => {
-          console.log('Error while selecting from categories:', error);
+          
           reject(error);
         },
       );
@@ -55,7 +55,7 @@ export const selectShirt = async () => {
         },
         
         (_, error) => {
-          console.log('Error while selecting from categories:', error);
+          
           reject(error);
         },
       );
@@ -87,7 +87,7 @@ export const selectcap = async () => {
         },
         
         (_, error) => {
-          console.log('Error while selecting from categories:', error);
+          
           reject(error);
         },
       );
@@ -119,7 +119,7 @@ export const selecttrouser = async () => {
         },
         
         (_, error) => {
-          console.log('Error while selecting from categories:', error);
+          
           reject(error);
         },
       );
@@ -151,7 +151,7 @@ export const selecthoodie = async () => {
         },
         
         (_, error) => {
-          console.log('Error while selecting from categories:', error);
+          
           reject(error);
         },
       );
@@ -183,7 +183,7 @@ export const selectpent = async () => {
         },
         
         (_, error) => {
-          console.log('Error while selecting from categories:', error);
+          
           reject(error);
         },
       );
@@ -215,7 +215,7 @@ export const selectsuit = async () => {
         },
         
         (_, error) => {
-          console.log('Error while selecting from categories:', error);
+          
           reject(error);
         },
       );

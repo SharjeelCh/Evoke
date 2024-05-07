@@ -195,7 +195,7 @@ function ConfirmScreen({route, navigation}) {
     });
   };
   useEffect(() => {
-    console.log(item);
+    
     getusername();
   }, []);
   return (

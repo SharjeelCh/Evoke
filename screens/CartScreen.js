@@ -153,7 +153,7 @@ const CartScreen = () => {
             onPress={() => {
               increaseQuantity(item.proid);
               setprice(item.Proprice * item.proQuantity);
-              console.log(item.proQuantity);
+              
             }}>
             <Ionicon color={'white'} size={20} name="add" />
           </TouchableOpacity>

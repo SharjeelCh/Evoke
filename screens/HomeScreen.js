@@ -404,7 +404,7 @@ const HomeScreen = () => {
     <View
       style={{
         flex: 1,
-        paddingTop: 20,
+        paddingTop: 45,
       }}>
       <View
         style={{

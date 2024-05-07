@@ -108,7 +108,7 @@ const LoginScreen = ({navigation}) => {
                   onPress={() => {
                     setModalVisible(!modalVisible);
                   }}>
-                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16}}>
+                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16, color:'black'}}>
                     Cancel
                   </Text>
                 </TouchableOpacity>
@@ -125,7 +125,7 @@ const LoginScreen = ({navigation}) => {
                   onPress={() => {
                     setModalVisible(!modalVisible);
                   }}>
-                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16}}>
+                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16, color:'black'}}>
                     Ok
                   </Text>
                 </TouchableOpacity>

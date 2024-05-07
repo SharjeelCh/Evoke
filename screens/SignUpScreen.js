@@ -56,7 +56,7 @@ const SignUpScreen = ({navigation}) => {
             <View
               style={{
                 width: '100%',
-                height: '20%',
+                height: '21%',
                 borderTopLeftRadius: 40,
                 borderTopRightRadius: 40,
                 backgroundColor: '#008080',
@@ -108,7 +108,7 @@ const SignUpScreen = ({navigation}) => {
                   onPress={() => {
                     setModalVisible(!modalVisible);
                   }}>
-                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16}}>
+                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16, color:'black'}}>
                     Cancel
                   </Text>
                 </TouchableOpacity>
@@ -125,7 +125,7 @@ const SignUpScreen = ({navigation}) => {
                   onPress={() => {
                     setModalVisible(!modalVisible);
                   }}>
-                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16}}>
+                  <Text style={{fontFamily: 'SulphurPoint-Bold', fontSize: 16, color:'black'}}>
                     Ok
                   </Text>
                 </TouchableOpacity>

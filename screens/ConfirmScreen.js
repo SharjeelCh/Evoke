@@ -55,7 +55,7 @@ function ConfirmScreen({route, navigation}) {
 
       insertintouserTransaction(userId, item, quantity, methodPay,address,price);
     } catch (error) {
-      console.error('Error getting user info:', error);
+      
     }
   };
   const getUserinfo = () => {
@@ -195,7 +195,7 @@ function ConfirmScreen({route, navigation}) {
     });
   };
   useEffect(() => {
-    console.log(item);
+    
     getusername();
   }, []);
   return (

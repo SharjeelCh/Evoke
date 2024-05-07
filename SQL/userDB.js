@@ -6,10 +6,10 @@ import {ToastAndroid} from 'react-native';
 const db = SQLite.openDatabase(
   {name: 'evokeDB.db', location: 'default'},
   () => {
-    console.log('evokeDB opened successfully');
+    
   },
   error => {
-    console.log('Error while opening the database:', error);
+    
   },
 );
 
@@ -19,10 +19,10 @@ export const createTable = () => {
       'CREATE TABLE IF NOT EXISTS Users (UserId INTEGER PRIMARY KEY AUTOINCREMENT, Username varchar(100), Email varchar(50), Password varchar(20))',
       [],
       (tx, results) => {
-        console.log('User table created successfully');
+        
       },
       (tx, error) => {
-        console.log('Error while creating table:', error);
+        
       },
     );
     createTrigger();
@@ -31,30 +31,30 @@ export const createTable = () => {
       'CREATE TABLE IF NOT EXISTS UserLogs (LogId INTEGER PRIMARY KEY AUTOINCREMENT, Event varchar(50), Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)',
       [],
       (_, results) => {
-        console.log('UserLogs table created successfully: ');
+        
       },
       (_, error) => {
-        console.log('Error while creating UserLogs table:', error);
+        
       },
     );
     tx.executeSql(
       'CREATE TABLE IF NOT EXISTS userCart (cartId INTEGER PRIMARY KEY AUTOINCREMENT, UserId INTEGER, proid INTEGER UNIQUE, Proname varchar(100), Proprice REAL, proSize varchar(10), rating REAL,proQuantity INTEGER, picture varchar(500), catid INTEGER, FOREIGN KEY (UserId) REFERENCES Users(UserId))',
       [],
       (_, results) => {
-        console.log('userCart table created successfully: ');
+        
       },
       (_, error) => {
-        console.log('Error while creating userCart table:', error);
+        
       },
     );
     tx.executeSql(
       'CREATE TABLE IF NOT EXISTS userWishlist (wishId INTEGER PRIMARY KEY AUTOINCREMENT, UserId INTEGER, proid INTEGER UNIQUE, Proname varchar(100), Proprice REAL, rating REAL, picture varchar(500), FOREIGN KEY (UserId) REFERENCES Users(UserId))',
       [],
       (_, results) => {
-        console.log('userWishlist table created successfully: ');
+        
       },
       (_, error) => {
-        console.log('Error while creating userWishlist table:', error);
+        
       },
     );
 
@@ -62,10 +62,10 @@ export const createTable = () => {
       'CREATE TABLE IF NOT EXISTS userTransaction (transId INTEGER PRIMARY KEY AUTOINCREMENT, UserID INTEGER, proid INTEGER, Proname varchar(100), Proprice REAL, proSize varchar(10), rating REAL,proQuantity INTEGER, picture varchar(500), catid INTEGER, MethodPay varchar(30) , address varchar(40),FOREIGN KEY (UserID) REFERENCES Users(UserId))',
       [],
       (_, results) => {
-        console.log('userTransaction table created successfully: ');
+        
       },
       (_, error) => {
-        console.log('Error while creating userTransaction table:', error);
+        
       },
     );
 
@@ -78,23 +78,17 @@ export const createTable = () => {
        END;`,
       [],
       (_, results) => {
-        console.log('User creation trigger created successfully: ');
+        
       },
       (_, error) => {
         ToastAndroid.show('Email must be a Gmail address', ToastAndroid.BOTTOM);
-        console.log('Error creating user creation trigger:', error);
+        
       },
     );
     tx.executeSql(`select * from UserLogs`, [], (_, results) => {
       const rows = results.rows;
 
-      for (let i = 0; i < rows.length; i++) {
-        console.log(
-          `LogId: ${rows.item(i).LogId}, Event: ${
-            rows.item(i).Event
-          }, Timestamp: ${rows.item(i).Timestamp}`,
-        );
-      }
+      
     });
   });
 };
@@ -111,10 +105,10 @@ const createTrigger = () => {
       `,
       [],
       () => {
-        console.log('Trigger created successfully');
+        
       },
       error => {
-        console.log('Error creating trigger:', error);
+        
       },
     );
   });
@@ -167,10 +161,10 @@ export const cartDB = (product, id, size) => {
         product.catid,
       ],
       (_, results) => {
-        console.log('Data inserted successfully into userCart');
+        
       },
       (_, error) => {
-        console.error('Error inserting data into userCart:', error);
+        
       },
     );
   });
@@ -189,10 +183,10 @@ export const wishDB = (product, id) => {
         product.picture,
       ],
       (_, results) => {
-        console.log('Data inserted successfully into userWishlist');
+        
       },
       (_, error) => {
-        console.error('Error inserting data into userWishlist:', error);
+        
       },
     );
   });
@@ -222,10 +216,10 @@ export const insertintouserTransaction = (
         address,
       ],
       (_, results) => {
-        console.log('Data inserted successfully into usertransaction');
+        
       },
       (_, error) => {
-        console.error('Error inserting data into usertransaction:', error);
+        
       },
     );
   });
@@ -246,7 +240,7 @@ export const validateCart = () => {
           resolve(proIds);
         },
         (_, error) => {
-          console.error('Error validating proID :', error);
+          
           reject(error);
         },
       );
@@ -410,7 +404,7 @@ export const getname = (email) => {
 
         },
         (_, error) => {
-         // console.error('Error validating proID :', error);
+         
         },
       );
     });
@@ -446,10 +440,10 @@ export const deleteWishlist = (id, proid) => {
       'DELETE FROM userWishlist WHERE UserId IN (SELECT UserId FROM Users WHERE Email = ?) AND proid = ?',
       [id, proid],
       (tx, results) => {
-        console.log('Wishlist deleted successfully');
+        
       },
       error => {
-        console.log('Error deleting wishlist', error);
+        
       },
     );
   });
@@ -461,10 +455,10 @@ export const deleteCart = (id, proid) => {
       'DELETE FROM userCart WHERE UserId IN (SELECT UserId FROM Users WHERE Email = ?) AND proid = ?',
       [id, proid],
       (tx, results) => {
-        console.log('cart deleted successfully after transaction');
+        
       },
       error => {
-        console.log('Error deleting wishlist', error);
+        
       },
     );
   });

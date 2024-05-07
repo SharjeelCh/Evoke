@@ -70,10 +70,10 @@ const HomeScreen = () => {
           'INSERT OR IGNORE INTO categories (catid, name) VALUES (?, ?);',
           [index + 1, categoryName],
           (_, resultSet) => {
-            console.log(`Category '${categoryName}' inserted successfully`);
+            
           },
           (_, error) => {
-            console.error('Error inserting category:', error.message);
+            
           },
         );
       });
@@ -92,15 +92,15 @@ const HomeScreen = () => {
               product.catid,
             ],
             (tx, results) => {
-              console.log('Results', results.rowsAffected);
+              
               if (results.rowsAffected > 0) {
-                console.log('Product inserted successfully');
+                
               } else {
-                console.log('Product already exists');
+                
               }
             },
             error => {
-              console.log('Error inserting produt:', error.message);
+              
             },
           );
         });
@@ -112,49 +112,49 @@ const HomeScreen = () => {
         setincoming(categories);
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        
       });
     selectShirt()
       .then(categories => {
         setshirt(categories);
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        
       });
     selectcap()
       .then(categories => {
         setcap(categories);
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        
       });
     selecttrouser()
       .then(categories => {
         settrouser(categories);
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        
       });
     selecthoodie()
       .then(categories => {
         sethoodie(categories);
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        
       });
     selectpent()
       .then(categories => {
         setpent(categories);
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        
       });
     selectsuit()
       .then(categories => {
         setsuit(categories);
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        
       });
 
     
@@ -164,7 +164,7 @@ const HomeScreen = () => {
    Tables(); // uncomment this to truncate cart and wishlist
 
      showtables1();
-    console.log('search: ', searchResults);
+    
     const startCarousel = () => {
       let index = currentIndex;
       setTimeout(() => {
@@ -369,15 +369,15 @@ const HomeScreen = () => {
       if (query.trim() !== '') {
         const items = await searchitemfromDB(query);
         setSearchResults(items);
-        console.log('found ', items.length, ' items');
-        console.log(searchResults);
+        
+        
         setsearch(false);
       } else {
         setSearchResults([]);
         setsearch(true);
       }
     } catch (error) {
-      console.error(`Error occurred while searching: ${error}`);
+      
     }
   };
   const getProductsByCategory = category => {

@@ -24,13 +24,13 @@ const SignUpScreen = ({navigation}) => {
   const handleSignup = async () => {
     try {
       const user = await createUser(userName, email, password);
-      console.log('User created successfully', user);
+      
 
       navigation.navigate('login');
     } catch (error) {
      // ToastAndroid.show('Please Enter correct data', ToastAndroid.BOTTOM);
      setModalVisible(true);
-      console.log('Error signing up:', error);
+      
     }
   };
 

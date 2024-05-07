@@ -153,7 +153,7 @@ const CartScreen = () => {
             onPress={() => {
               increaseQuantity(item.proid);
               setprice(item.Proprice * item.proQuantity);
-              console.log(item.proQuantity);
+              
             }}>
             <Ionicon color={'white'} size={20} name="add" />
           </TouchableOpacity>
@@ -175,7 +175,7 @@ const CartScreen = () => {
         setitem(cart);
       })
       .catch(error => {
-        console.error('Error fetching cart items:', error);
+        
       })
       .finally(() => {
         setRefreshing(false);
@@ -190,7 +190,7 @@ const CartScreen = () => {
         else setbottom('0');
       })
       .catch(error => {
-        console.error('Error getting user info:', error);
+        
       });
   }, [refresh]);
 

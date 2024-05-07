@@ -12,10 +12,10 @@ const ProductScreen = ({navigation, route}) => {
   const db = SQLite.openDatabase(
     {name: 'evokeDB.db', location: 'default'},
     () => {
-      console.log('evokeDB opened successfully');
+      
     },
     error => {
-      console.log('Error while opening the database:', error);
+      
     },
   );
   const [selectedSize, setSelectedSize] = useState('M');
@@ -32,7 +32,7 @@ const ProductScreen = ({navigation, route}) => {
 
   const handleSizeSelection = size => {
     setSelectedSize(size);
-    console.log(size);
+    
   };
   const handlecart = async product => {
     try {
@@ -44,7 +44,7 @@ const ProductScreen = ({navigation, route}) => {
         cartDB(product, userId, selectedSize);
       }
     } catch (error) {
-      console.error('Error getting user info:', error);
+      
     }
   };
   const handlewishlist = async product => {
@@ -57,7 +57,7 @@ const ProductScreen = ({navigation, route}) => {
         wishDB(product, userId);
       }
     } catch (error) {
-      console.error('Error getting user info:', error);
+      
     }
   };
   const getUserinfo = () => {
@@ -80,22 +80,22 @@ const ProductScreen = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    console.log('item', item);
+    
     getUserinfo()
       .then(user => {
-        console.log(user.UserId);
+        
       })
       .catch(error => {
-        console.error('Error getting user info:', error);
+        
       });
 
     validateCart()
       .then(proId => {
-        console.log(proId);
+        
         setval(proId);
       })
       .catch(error => {
-        console.error('Error getting user info:', error);
+        
       });
   }, [item]);
   return (

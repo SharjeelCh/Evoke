@@ -31,7 +31,7 @@ const ProfileScreen = ({navigation}) => {
 
       navigation.navigate('welcome');
     } catch (error) {
-      console.error('Error during logout', error);
+      
     }
   };
 
@@ -66,7 +66,7 @@ const ProfileScreen = ({navigation}) => {
   useEffect(() => {
     getusername();
     getname(user.Email)
-    console.log('user email: ', user.Email);
+    
   }, [user]);
 
   const renderMenuItem = (iconName, label, onPress) => (

@@ -95,7 +95,7 @@ const OtpScreen = ({route}) => {
         setitem(trans);
       })
       .catch(error => {
-        console.error('Error fetching trans items:', error);
+        
       })
       .finally(() => {
         setRefreshing(false);
@@ -108,7 +108,7 @@ const OtpScreen = ({route}) => {
         setitem(trans);
       })
       .catch(error => {
-        console.error('Error getting user info:', error);
+        
       });
   }, [refresh]);
 

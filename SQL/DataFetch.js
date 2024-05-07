@@ -45,10 +45,10 @@ const DataFetch = () => {
               'INSERT OR IGNORE INTO categories (catid, name) VALUES (?, ?);',
               [index + 1, categoryName],
               (_, resultSet) => {
-                console.log(`Category '${categoryName}' inserted successfully`);
+                
               },
               (_, error) => {
-                console.error('Error inserting category:', error);
+                
               },
             );
           });
@@ -87,15 +87,10 @@ const DataFetch = () => {
                     categoryId + 1,
                   ],
                   (_, resultSet) => {
-                    console.log(
-                      `Product '${product.productTitle}' inserted successfully`,
-                      tx.executeSql('COMMIT;', [], () => {
-                        console.log('Transaction committed successfully');
-                      })
-                    );
+                    
                   },
                   (_, error) => {
-                    console.error('Error inserting product:', error);
+                    
                   },
                 );
               }
@@ -106,16 +101,16 @@ const DataFetch = () => {
         // setData1(result.payload.products);
 
         ///////
-        // console.log(data1);
+        
         offset += limit;
        
       } else {
         hasMoreProducts = false;
-        console.error('No products found for category:', category);
+        
       }
     } catch (error) {
       hasMoreProducts = false;
-      console.error(error);
+      
     }
   };
 }

@@ -35,7 +35,7 @@ const Wishlist = ({navigation}) => {
         setitem(wish);
       })
       .catch(error => {
-        console.error('Error fetching wishlist items:', error);
+        
       })
       .finally(() => {
         setRefreshing(false);
@@ -48,7 +48,7 @@ const Wishlist = ({navigation}) => {
         setitem(wish);
       })
       .catch(error => {
-        console.error('Error getting user info:', error);
+        
       });
   }, [refresh]);
 

@@ -70,7 +70,7 @@ const HomeScreen = () => {
           'INSERT OR IGNORE INTO categories (catid, name) VALUES (?, ?);',
           [index + 1, categoryName],
           (_, resultSet) => {
-            
+            console.log(`Category '${categoryName}' inserted successfully`);
           },
           (_, error) => {
             console.error('Error inserting category:', error.message);
@@ -92,15 +92,15 @@ const HomeScreen = () => {
               product.catid,
             ],
             (tx, results) => {
-              
+              console.log('Results', results.rowsAffected);
               if (results.rowsAffected > 0) {
-                
+                console.log('Product inserted successfully');
               } else {
-                
+                console.log('Product already exists');
               }
             },
             error => {
-              
+              console.log('Error inserting produt:', error.message);
             },
           );
         });
@@ -164,7 +164,7 @@ const HomeScreen = () => {
    Tables(); // uncomment this to truncate cart and wishlist
 
      showtables1();
-    
+    console.log('search: ', searchResults);
     const startCarousel = () => {
       let index = currentIndex;
       setTimeout(() => {
@@ -369,8 +369,8 @@ const HomeScreen = () => {
       if (query.trim() !== '') {
         const items = await searchitemfromDB(query);
         setSearchResults(items);
-        
-        
+        console.log('found ', items.length, ' items');
+        console.log(searchResults);
         setsearch(false);
       } else {
         setSearchResults([]);

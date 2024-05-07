@@ -19,7 +19,7 @@ const LoginScreen = ({navigation}) => {
   const handleLogin = async () => {
     try {
       const user = await loginUser(email,password)
-      
+      console.log('User data after login:', user);
       setUser(user);
       await AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
       await AsyncStorage.setItem('userData', JSON.stringify(user));
@@ -28,7 +28,7 @@ const LoginScreen = ({navigation}) => {
         setModalVisible(true);
       }
     } catch (error) {
-      
+      console.log('Error logging in:', error);
       setModalVisible(true);
 
     }
@@ -138,7 +138,7 @@ const LoginScreen = ({navigation}) => {
   };
 
   useEffect(()=>{
-    
+    console.log('Logged in userContext:', user);
   },[])
 
   return (
